@@ -1,0 +1,7 @@
+.link {
+    color: black;
+    letter-spacing: var(--main-letter-spacing);
+    font-weight: 500;
+    font-size: 10px;
+    text-transform: uppercase;
+}

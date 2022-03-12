@@ -1,0 +1,16 @@
+.logo {
+    font-weight: 400;
+    font-size: 19px;
+    letter-spacing: var(--main-letter-spacing);
+}
+
+.nav {
+    box-shadow: 0px 3px 6px rgb(0, 0, 0, 0.16);
+    display: flex;
+    min-width: 100vw;
+    justify-content: space-between;
+    align-items: center;
+    height: 62px;
+    padding: 0px 52px ;
+   
+}

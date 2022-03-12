@@ -1,0 +1,12 @@
+.circle {
+    margin: 10vh auto;
+}
+
+.container {
+    margin: auto auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

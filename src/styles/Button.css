@@ -1,0 +1,21 @@
+.button {
+    background: none;
+    font-family: jost;
+    font-weight: 300;
+    font-size: 19px;
+    letter-spacing: var(--main-letter-spacing);
+    cursor: pointer;
+    height: 33px;
+    border: 1px solid rgb(112, 112, 112);
+
+}
+
+.square {
+    padding: 0 30px;
+    border-radius: 2px;
+}
+
+.round {
+    border-radius: 16px;
+    padding: 0px 15px;
+}
