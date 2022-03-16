@@ -1,6 +1,28 @@
 .bar {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin: 10vh auto;
-    
+}
+
+.container {
+    margin: 0px 5vw;
+    display: flex;
+    flex-direction: row;
+}
+.slot {
+    height: 50px;
+    width: 50px;
+    background-color: rgb(239, 239, 239);
+    margin: 0 1vw;
+    cursor: pointer;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 29px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.incorrect {
+    box-shadow: 0px 0px 6px red;
 }
