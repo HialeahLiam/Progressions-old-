@@ -23,13 +23,20 @@ export default function ChordNode({
         width: `${2 * radius}px`,
       }}
     >
-      {chord}
+      {chord.root}
+      <span className="symbol">
+        {' '}
+        {chord.chordSymbol}
+      </span>
     </div>
   );
 }
 
 ChordNode.propTypes = {
-  chord: PropTypes.string.isRequired,
+  chord: PropTypes.shape({
+    root: PropTypes.string,
+    chordSymbol: PropTypes.string,
+  }).isRequired,
   sendInput: PropTypes.func.isRequired,
   position: PropTypes.shape({
     x: PropTypes.number,

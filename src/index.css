@@ -16,6 +16,16 @@
   font-weight: 500;
 }
 
+@font-face {
+  font-family: bravura;
+  src: url('../fonts/Bravura/Bravura.otf') format('opentype');
+}
+
+@font-face {
+  font-family: bravura-text;
+  src: url('../fonts/Bravura/BravuraText.otf') format('opentype');
+}
+
 * {
   box-sizing: border-box;
 }

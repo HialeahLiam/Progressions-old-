@@ -15,7 +15,7 @@ export default function CircleSelection({ scale, sendInput, radius }) {
     const x = radius * Math.sin(angle) + radius - RADIUS_OF_NODES;
     const y = radius - radius * Math.cos(angle);
     nodes.push(<ChordNode
-      key={chords[i]}
+      key={i}
       chord={chords[i]}
       sendInput={sendInput}
       position={{ x, y }}

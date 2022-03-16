@@ -21,6 +21,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.slot::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+}
+
+.selected-slot {
+    border: solid 3px silver;
+}
+
+.slot:hover {
+    /* box-shadow: 0 0 10px gray; */
+    transform: scale(1.1);
 }
 
 .incorrect {

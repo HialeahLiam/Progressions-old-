@@ -11,20 +11,19 @@ const diatonicMajorScaleChords = getDiatonicChords(scale);
 const progression = [diatonicMajorScaleChords[0],
   diatonicMajorScaleChords[1],
   diatonicMajorScaleChords[2],
-  diatonicMajorScaleChords[3]];
+  diatonicMajorScaleChords[6]];
 
 export default function Training() {
-  // eslint-disable-next-line no-unused-vars
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(null);
   const [incorrectChords, setIncorrectChords] = useState([]);
+  const [isSubmitting, setSubmit] = useState(false);
 
   const inputHandler = (newInput) => {
-    setInput(newInput);
+    if (!isSubmitting) setInput(newInput);
   };
 
-  // eslint-disable-next-line no-unused-vars
   const submitHandler = (inputtedChords) => {
-    console.log('checking submission ...');
+    setSubmit(true);
     const incorrectIndices = [];
     for (let i = 0; i < progression.length; i++) {
       if (inputtedChords[i] !== progression[i]) {
@@ -35,9 +34,9 @@ export default function Training() {
   };
 
   useEffect(() => {
-    // Resets input to empty string to trigger prop change  in case same chord is inputted.
-    // Otherwise, ProgressionBar won't consider consecutive clicks of the same chord.
-    setInput('');
+    // resets ProgressionBar's input prop to null to allow consecutive input
+    // of previous chord
+    setInput(null);
   }, [input]);
 
   return (
@@ -48,6 +47,7 @@ export default function Training() {
         submitHandler={submitHandler}
         input={input}
         incorrectSubmissions={incorrectChords}
+        submit={isSubmitting}
       />
       <CircleSelection scale={scale} sendInput={inputHandler} />
     </div>

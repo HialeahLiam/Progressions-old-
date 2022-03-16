@@ -1,4 +1,26 @@
-const majorDiatonicTriads = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\u00B0'];
+const majorDiatonicTriads = [
+  {
+    root: 'I',
+    chordSymbol: '',
+  }, {
+    root: 'ii',
+    chordSymbol: '',
+  }, {
+    root: 'iii',
+    chordSymbol: '',
+  }, {
+    root: 'IV',
+    chordSymbol: '',
+  }, {
+    root: 'V',
+    chordSymbol: '',
+  }, {
+    root: 'vi',
+    chordSymbol: '',
+  }, {
+    root: 'vii',
+    chordSymbol: '\ue870',
+  }];
 
 const Scale = {
   MAJOR: 'major',

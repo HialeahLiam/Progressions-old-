@@ -6,10 +6,16 @@
     justify-content: center;
     border-radius: 100%;
     cursor: pointer;
-    font-family: 'Times New Roman', Times, serif;
+    /* font-family: 'Times New Roman', Times, serif; */
+    font-family: bravura-test;
     font-size: 22px;
     color: rgb(242, 243, 247);
     position: absolute;
+
+}
+
+.symbol {
+    font-family: bravura;
 }
 
 .node:focus-visible {

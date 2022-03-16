@@ -4,9 +4,9 @@ import Button from './Button';
 import '../styles/ProgressionBar.css';
 
 function ProgressionBar({
-  incorrectSubmissions, submitHandler, input, amountOfSlots,
+  incorrectSubmissions, submitHandler, input, amountOfSlots, submit,
 }) {
-  const [inputs, setInputs] = useState([]);
+  const [inputs, setInputs] = useState([input]);
   const [classNames, setClasses] = useState([]);
   const [currentlySelectedSlot, selectSlot] = useState(0);
   // TODO: set slots as state. When proceding to next progression, otherwise, ProgressionBar will
@@ -20,7 +20,7 @@ function ProgressionBar({
   for (let i = 0; i < amountOfSlots; i++) {
     slots.push(
       <div
-        className={`slot ${classNames[i]}`}
+        className={`slot ${classNames[i]} ${currentlySelectedSlot === i ? 'selected-slot' : null}`}
         key={i}
         onClick={() => handleSelection(i)}
         onFocus={() => handleSelection(i)}
@@ -28,7 +28,14 @@ function ProgressionBar({
         tabIndex={0}
         role="button"
       >
-        {inputs[i]}
+        {inputs[i]
+          ? (
+            <>
+              {inputs[i].root}
+              <span className="symbol">{inputs[i].chordSymbol}</span>
+            </>
+          )
+          : ''}
       </div>,
     );
   }
@@ -41,7 +48,7 @@ function ProgressionBar({
   };
 
   useEffect(() => {
-    if (input !== '') handleInput(input);
+    if (input) handleInput(input);
   }, [input]);
 
   useEffect(() => {
@@ -58,7 +65,9 @@ function ProgressionBar({
       <div className="container">
         {slots}
       </div>
-      <Button type="round" clickHandler={() => submitHandler(inputs)}>submit</Button>
+      {submit
+        ? <Button type="round" clickHandler={() => {}}>next</Button>
+        : <Button type="round" clickHandler={() => submitHandler(inputs)}>submit</Button>}
     </div>
   );
 }
@@ -66,13 +75,20 @@ function ProgressionBar({
 ProgressionBar.propTypes = {
   incorrectSubmissions: PropTypes.arrayOf(PropTypes.number),
   submitHandler: PropTypes.func.isRequired,
-  input: PropTypes.string,
+  input: PropTypes.shape({
+    root: PropTypes.string,
+    chordSymbol: PropTypes.string,
+  }),
   amountOfSlots: PropTypes.number.isRequired,
+  submit: PropTypes.bool.isRequired,
 };
 
 ProgressionBar.defaultProps = {
   incorrectSubmissions: [],
-  input: '',
+  input: {
+    root: '',
+    chordSymbol: '',
+  },
 };
 
 export default ProgressionBar;
