@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import Button from './Button';
 import '../styles/ProgressionBar.css';
 
@@ -7,20 +8,29 @@ function ProgressionBar({
   incorrectSubmissions, submitHandler, input, amountOfSlots, submit,
 }) {
   const [inputs, setInputs] = useState([input]);
-  const [classNames, setClasses] = useState([]);
   const [currentlySelectedSlot, selectSlot] = useState(0);
-  // TODO: set slots as state. When proceding to next progression, otherwise, ProgressionBar will
-  // not re-render
+
   const slots = [];
+  const slotClasses = [];
 
   const handleSelection = (i) => {
     selectSlot(i);
   };
 
   for (let i = 0; i < amountOfSlots; i++) {
+    slotClasses.push(
+      classNames(
+        'slot',
+        {
+          'selected-slot': !submit && currentlySelectedSlot === i,
+          incorrect: incorrectSubmissions.find((e) => e === i),
+        },
+      ),
+    );
+    // console.log(slotClasses);
     slots.push(
       <div
-        className={`slot ${classNames[i]} ${currentlySelectedSlot === i ? 'selected-slot' : null}`}
+        className={slotClasses[i]}
         key={i}
         onClick={() => handleSelection(i)}
         onFocus={() => handleSelection(i)}
@@ -50,14 +60,6 @@ function ProgressionBar({
   useEffect(() => {
     if (input) handleInput(input);
   }, [input]);
-
-  useEffect(() => {
-    const classes = [];
-    incorrectSubmissions.forEach((i) => {
-      classes[i] = 'incorrect';
-    });
-    setClasses(classes);
-  }, [incorrectSubmissions]);
 
   return (
     <div className="bar">
