@@ -7,7 +7,7 @@ import '../styles/ProgressionBar.css';
 function ProgressionBar({
   incorrectSubmissions, submitHandler, input, amountOfSlots, submit,
 }) {
-  const [inputs, setInputs] = useState([input]);
+  const [inputs, setInputs] = useState([]);
   const [currentlySelectedSlot, selectSlot] = useState(0);
 
   const slots = [];
@@ -57,6 +57,12 @@ function ProgressionBar({
     if (currentlySelectedSlot < amountOfSlots - 1) selectSlot((slot) => slot + 1);
   };
 
+  const handleSubmit = () => {
+    if (inputs.length === amountOfSlots) {
+      submitHandler(inputs);
+    }
+  };
+
   useEffect(() => {
     if (input) handleInput(input);
   }, [input]);
@@ -69,7 +75,7 @@ function ProgressionBar({
       </div>
       {submit
         ? <Button type="round" clickHandler={() => {}}>next</Button>
-        : <Button type="round" clickHandler={() => submitHandler(inputs)}>submit</Button>}
+        : <Button type="round" clickHandler={handleSubmit}>submit</Button>}
     </div>
   );
 }
