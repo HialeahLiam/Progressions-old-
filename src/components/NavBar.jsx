@@ -8,9 +8,10 @@ function NavBar() {
   return (
     <nav className="nav">
       <span className="logo">Progressions</span>
-      <NavLink target="">training</NavLink>
+      <NavLink target="/training">training</NavLink>
       <NavLink target="">collections</NavLink>
       <NavLink target="">theory</NavLink>
+      <NavLink target="/synthesizer">synthesizer</NavLink>
       <Button type="square" clickHandler={() => 5}>login</Button>
     </nav>
   );

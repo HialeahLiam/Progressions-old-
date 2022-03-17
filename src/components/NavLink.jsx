@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import '../styles/NavLink.css';
 
 function NavLink({ target, children }) {
   return (
-    <a
-      href={target}
+    <Link
+      to={target}
       className="link"
     >
       {children}
 
-    </a>
+    </Link>
   );
 }
 

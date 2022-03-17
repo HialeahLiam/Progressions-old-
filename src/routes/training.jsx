@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import CircleSelection from './CircleSelection';
+import CircleSelection from '../components/CircleSelection';
 import { Scale, getDiatonicChords } from '../lib/progressions';
-import Header from './Header';
-import ProgressionBar from './ProgressionBar';
+import Header from '../components/Header';
+import ProgressionBar from '../components/ProgressionBar';
 
 const scale = Scale.MAJOR;
 
