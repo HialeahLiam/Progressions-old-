@@ -5,7 +5,7 @@ import Button from './Button';
 import '../styles/ProgressionBar.css';
 
 function ProgressionBar({
-  incorrectSubmissions, submitHandler, input, amountOfSlots, submit,
+  incorrectSubmissions, submitHandler, playHandler, input, amountOfSlots, submit,
 }) {
   const [inputs, setInputs] = useState([]);
   const [currentlySelectedSlot, selectSlot] = useState(0);
@@ -27,7 +27,6 @@ function ProgressionBar({
         },
       ),
     );
-    // console.log(slotClasses);
     slots.push(
       <div
         className={slotClasses[i]}
@@ -69,7 +68,7 @@ function ProgressionBar({
 
   return (
     <div className="bar">
-      <Button type="round" clickHandler={() => { }}>play</Button>
+      <Button type="round" clickHandler={playHandler}>play</Button>
       <div className="container">
         {slots}
       </div>
@@ -83,6 +82,7 @@ function ProgressionBar({
 ProgressionBar.propTypes = {
   incorrectSubmissions: PropTypes.arrayOf(PropTypes.number),
   submitHandler: PropTypes.func.isRequired,
+  playHandler: PropTypes.func.isRequired,
   input: PropTypes.shape({
     root: PropTypes.string,
     chordSymbol: PropTypes.string,

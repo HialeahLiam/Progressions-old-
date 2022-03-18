@@ -1,8 +1,15 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import '../styles/Synthesizer.css';
 
 function Synthesizer() {
   const [volume, setVolume] = useState(0.5);
+
+  const audioContext = new window.AudioContext();
+  const oscList = [];
+  const mainGainNode = null;
+  const sineTerms = null;
+  const cosineTerms = null;
 
   const handleVolumeChange = (event) => {
     setVolume(event.target.value);
@@ -12,7 +19,6 @@ function Synthesizer() {
   for (let octave = 0; octave < 9; octave++) {
     noteFreq[octave] = [];
     // 0 is C
-    // TODO calculate kFactor
     const kFactor = 2 ** (1 / 12);
     for (let note = 0; note < 12; note++) {
       noteFreq[octave][note] = 27.5;
@@ -24,15 +30,28 @@ function Synthesizer() {
       }
     }
   }
-
+  console.log(noteFreq);
   return (
     <>
-      <div className="container">
-        <div className="keyboard" />
+      <div className="keyboard-container">
+        <div className="keyboard">
+          {noteFreq.map((oct, i) => {
+            const notes = Object.entries(oct);
+            return (
+              <div className="octave">
+                {notes.map((note, j) => (
+                  <div className="key" data-octave={i} data-note={j} data-frequency={j}>
+                    <div />
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <div className="settings-bar">
+      <div className="settingsBar">
         <div
-          className="left"
+          className="settingsBar-left"
         >
           <span>Volume: </span>
           <input
@@ -50,7 +69,7 @@ function Synthesizer() {
             <option value="1.0" label="100%" />
           </datalist>
         </div>
-        <div className="right">
+        <div className="settingsBar-right">
           <span>Current waveform: </span>
           <select name="waveform">
             <option value="sine">Sine</option>

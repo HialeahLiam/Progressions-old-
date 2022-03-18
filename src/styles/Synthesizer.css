@@ -1,4 +1,4 @@
-.container {
+.keyboard-container {
     overflow-x: scroll;
     overflow-y: hidden;
     width: 660px;
@@ -67,7 +67,7 @@
     height: 30px;
   }
   
-  .left {
+  .settingsBar-left {
     width: 50%;
     position: absolute;
     left: 0;
@@ -75,11 +75,11 @@
     vertical-align: middle;
   }
   
-  .left span, .left input {
+.settingsBar-left span, .settingsBar-left input {
     vertical-align: middle;
   }
   
-  .right {
+  .settingsBar-right {
     width: 50%;
     position: absolute;
     right: 0;
@@ -87,11 +87,11 @@
     vertical-align: middle;
   }
   
-  .right span {
+  .settingsBar-right span {
     vertical-align: middle;
   }
   
-  .right input {
+  .settingsBar-right input {
     vertical-align: baseline;
   }
   
