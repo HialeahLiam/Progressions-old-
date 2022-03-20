@@ -6,7 +6,9 @@ export default function ChordNode({
   chord, sendInput, position, radius,
 }) {
   const handleInput = () => {
-    sendInput(chord);
+    // Send a copy of chord object so ProgressionBar can manipulate it without
+    // affecting the chord object here
+    sendInput({ ...chord });
   };
 
   return (

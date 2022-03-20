@@ -1,34 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import CircleSelection from '../components/CircleSelection';
-import { Scale, getDiatonicChords } from '../lib/progressions';
+import {
+  randomProgression,
+  randomDiatonicTriadGenerator,
+  Scale,
+  // getDiatonicChords,
+  convertChordsToFrequencies,
+} from '../lib/progressions';
 import Header from '../components/Header';
 import ProgressionBar from '../components/ProgressionBar';
 import Button from '../components/Button';
 
 const scale = Scale.MAJOR;
 
-const diatonicMajorScaleChords = getDiatonicChords(scale);
+// const diatonicMajorScaleChords = getDiatonicChords(scale);
 
-const PROGRESSION = [diatonicMajorScaleChords[0],
-  diatonicMajorScaleChords[1],
-  diatonicMajorScaleChords[2],
-  diatonicMajorScaleChords[6]];
-
-const NOTE_FREQ = [];
-for (let octave = 0; octave < 9; octave++) {
-  NOTE_FREQ[octave] = [];
-  // 0 is C
-  const kFactor = 2 ** (1 / 12);
-  for (let note = 0; note < 12; note++) {
-    NOTE_FREQ[octave][note] = 27.5;
-    if (!(octave === 0 && note < 9)) {
-      const prevNote = note === 0
-        ? NOTE_FREQ[octave - 1][11]
-        : NOTE_FREQ[octave][note - 1];
-      NOTE_FREQ[octave][note] = prevNote * kFactor;
-    }
-  }
-}
+// const PROGRESSION = [
+//   diatonicMajorScaleChords[0],
+//   diatonicMajorScaleChords[2],
+//   diatonicMajorScaleChords[3],
+//   diatonicMajorScaleChords[4]];
 
 // const ROOT = 0;
 
@@ -36,8 +27,9 @@ export default function Training() {
   const [input, setInput] = useState(null);
   const [incorrectChords, setIncorrectChords] = useState([]);
   const [isSubmitting, setSubmit] = useState(false);
-  const [volume, setVolume] = useState(0.1);
+  const [volume, setVolume] = useState(0.05);
   const [training, setTraining] = useState(false);
+  const [progression, setProgression] = useState();
 
   const mainGainNode = useRef();
   const audioContext = useRef();
@@ -49,10 +41,13 @@ export default function Training() {
   };
 
   const submitHandler = (inputtedChords) => {
+    console.log(inputtedChords);
+    console.log(progression);
     setSubmit(true);
     const incorrectIndices = [];
-    for (let i = 0; i < PROGRESSION.length; i++) {
-      if (inputtedChords[i] !== PROGRESSION[i]) {
+    for (let i = 0; i < progression.length; i++) {
+      if (inputtedChords[i].root !== progression[i].root
+        && inputtedChords[i].chordSymbol !== progression[i].chordSymbol) {
         incorrectIndices.push(i);
       }
     }
@@ -61,16 +56,29 @@ export default function Training() {
 
   const volumeChangeHandler = (event) => {
     setVolume(event.target.value);
-    mainGainNode.gain.value = event.target.value;
+    mainGainNode.current.gain.value = event.target.value;
+  };
+
+  const pausePlayback = () => {
+    clearInterval(playbackIntervalId.current);
+    mainGainNode.current.disconnect();
+  };
+
+  const handleNext = () => {
+    setInput(null);
+    setIncorrectChords([]);
+    setSubmit(false);
+    setProgression(randomProgression(8, () => randomDiatonicTriadGenerator(Scale.MAJOR)));
+    pausePlayback();
   };
 
   const playProgression = (prog) => {
     clearInterval(playbackIntervalId.current);
 
-    mainGainNode.current.connect(audioContext.current.destination);
     prog[0].forEach((freq, index) => {
       oscillators.current[index].frequency.value = freq;
     });
+    mainGainNode.current.connect(audioContext.current.destination);
 
     let progCount = 1;
 
@@ -78,35 +86,28 @@ export default function Training() {
       if (progCount < prog.length) {
         prog[progCount].forEach((freq, index) => {
           oscillators.current[index].frequency.value = freq;
+          // mainGainNode.current.gain.value = 0;
+          // mainGainNode.current.gain.exponentialRampToValueAtTime(
+          //   volume,
+          //   audioContext.current.currentTime + 0.05,
+          // );
         });
         progCount++;
       } else {
         mainGainNode.current.disconnect();
         clearInterval(playbackIntervalId.current);
       }
-    }, 500);
-
-    console.log(prog);
+    }, 2000);
   };
 
   const playHandler = () => {
-    console.log('playing progression');
-    playProgression([
-      [NOTE_FREQ[3][0], NOTE_FREQ[3][4], NOTE_FREQ[3][7]],
-      [NOTE_FREQ[3][2], NOTE_FREQ[3][5], NOTE_FREQ[3][9]],
-      [NOTE_FREQ[3][4], NOTE_FREQ[3][7], NOTE_FREQ[3][11]],
-      [NOTE_FREQ[3][5], NOTE_FREQ[3][9], NOTE_FREQ[4][0]],
-
-    ]);
+    playProgression(convertChordsToFrequencies(progression, 2, 4));
   };
 
   const beginTrainingHandler = () => {
-    const gainNode = new GainNode(audioContext.current, { gain: volume });
-    mainGainNode.current = gainNode;
-    oscillators.current.forEach((osc) => {
-      osc.connect(mainGainNode.current);
-      osc.start();
-    });
+    if (audioContext.current.state === 'suspended') {
+      audioContext.current.resume();
+    }
     setTraining(true);
   };
 
@@ -114,14 +115,23 @@ export default function Training() {
     const context = new (window.AudioContext || window.webkitAudioContext)();
     audioContext.current = context;
     oscillators.current[0] = new OscillatorNode(audioContext.current, {
-      type: 'square',
+      type: 'triangle',
     });
     oscillators.current[1] = new OscillatorNode(audioContext.current, {
-      type: 'square',
+      type: 'triangle',
     });
     oscillators.current[2] = new OscillatorNode(audioContext.current, {
-      type: 'square',
+      type: 'triangle',
     });
+
+    const gainNode = new GainNode(audioContext.current, { gain: volume });
+    mainGainNode.current = gainNode;
+    oscillators.current.forEach((osc) => {
+      osc.connect(mainGainNode.current);
+      osc.start();
+    });
+
+    setProgression(randomProgression(4, () => randomDiatonicTriadGenerator(Scale.MAJOR)));
   }, []);
 
   useEffect(() => {
@@ -137,14 +147,15 @@ export default function Training() {
         ? (
           <>
             <ProgressionBar
-              amountOfSlots={PROGRESSION.length}
+              amountOfSlots={progression.length}
               submitHandler={submitHandler}
               playHandler={playHandler}
+              nextHandler={handleNext}
               input={input}
               incorrectSubmissions={incorrectChords}
               submit={isSubmitting}
             />
-            <input type="range" min="0.0" max="1.0" value={volume} onChange={volumeChangeHandler} step="0.01" />
+            <input type="range" min="0.0" max="0.1" value={volume} onChange={volumeChangeHandler} step="0.01" />
             <CircleSelection scale={scale} sendInput={inputHandler} />
           </>
         )
