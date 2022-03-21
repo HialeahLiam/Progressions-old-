@@ -112,7 +112,41 @@ const convertChordsToFrequencies = (chords, root, octave) => chords.map((chord) 
   return chordFreqs;
 });
 
+/**
+ *
+ *@param {Object} chord
+ * @param {string} chord.root
+ * @param {string} chord.chordSymbol
+ *@param {Object[]} chord.relativeSemitones
+ @param {number[]} chord.relativeSemitones[]
+ */
+const makeMinor = (chord) => {
+  // make copy so as to not modify the original chord object
+  const newChord = {};
+  newChord.root = chord.root.toLowerCase();
+  newChord.chordSymbol = chord.chordSymbol;
+  let minorThirdIndex = 1;
+  let rootIndex = 0;
+  const minorThirdInSemitones = 4;
+  const numberOfInversions = chord.relativeSemitones.length;
+  newChord.relativeSemitones = chord.relativeSemitones.map((inversion) => {
+    // don't want to modify original inversion array because it should be
+    // read-only
+    const newInversion = [...inversion];
+    newInversion[minorThirdIndex] = newInversion[rootIndex] + minorThirdInSemitones;
+    rootIndex = rootIndex === 0
+      ? numberOfInversions - 1
+      : --rootIndex;
+    minorThirdIndex = minorThirdIndex === 0
+      ? numberOfInversions - 1
+      : --minorThirdIndex;
+
+    return newInversion;
+  });
+  return newChord;
+};
+
 export {
-  getDiatonicChords, randomProgression, randomDiatonicTriadGenerator, Scale,
+  makeMinor, getDiatonicChords, randomProgression, randomDiatonicTriadGenerator, Scale,
   convertChordsToFrequencies,
 };

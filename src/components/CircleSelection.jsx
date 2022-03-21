@@ -7,9 +7,10 @@ import Button from './Button';
 import ModifierInputButton from './ModifierInputButton';
 
 const RADIUS_OF_NODES = 33;
-export default function CircleSelection({ scale, sendInput, radius }) {
+export default function CircleSelection({
+  scale, sendInput, radius,
+}) {
   const chords = getDiatonicChords(scale);
-  console.log(chords);
   const nodes = [];
   for (let i = 0; i < chords.length; i++) {
     // clockwise angle between node and top of circle
@@ -44,9 +45,13 @@ export default function CircleSelection({ scale, sendInput, radius }) {
         >
           {/* passing text as prop instead of child so that component can decide actual
           string to send as modifier in chord object */}
-          <ModifierInputButton modifier="major-seventh" sendInput={sendInput} />
-          <ModifierInputButton modifier="minor-seventh" sendInput={sendInput} />
-          <ModifierInputButton modifier="diminished-seventh" sendInput={sendInput} />
+          <ModifierInputButton
+            modifier="minor"
+            handler={sendInput}
+          />
+          <ModifierInputButton modifier="major-seventh" handler={() => { sendInput(); }} />
+          <ModifierInputButton modifier="minor-seventh" handler={() => { sendInput(); }} />
+          <ModifierInputButton modifier="diminished-seventh" handler={() => { sendInput(); }} />
 
         </div>
       </div>

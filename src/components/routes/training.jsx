@@ -1,27 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import CircleSelection from '../components/CircleSelection';
+import CircleSelection from '../CircleSelection';
 import {
   randomProgression,
   randomDiatonicTriadGenerator,
   Scale,
   // getDiatonicChords,
   convertChordsToFrequencies,
-} from '../lib/progressions';
-import Header from '../components/Header';
-import ProgressionBar from '../components/ProgressionBar';
-import Button from '../components/Button';
+} from '../../lib/progressions';
+import Header from '../Header';
+import ProgressionBar from '../ProgressionBar';
+import Button from '../Button';
 
 const scale = Scale.MAJOR;
-
-// const diatonicMajorScaleChords = getDiatonicChords(scale);
-
-// const PROGRESSION = [
-//   diatonicMajorScaleChords[0],
-//   diatonicMajorScaleChords[2],
-//   diatonicMajorScaleChords[3],
-//   diatonicMajorScaleChords[4]];
-
-// const ROOT = 0;
 
 export default function Training() {
   const [input, setInput] = useState(null);
@@ -36,13 +26,31 @@ export default function Training() {
   const oscillators = useRef([]);
   const playbackIntervalId = useRef();
 
+  /**
+ *
+ * @param {Object} newInput - chord object inputted by user
+ * @param {string} newInput.root - "roman numeral" of chord. Should be null
+ * if user inputs a modifier.
+ * @param {string} newInput.chordSymbol - chord symbols other than the root
+ */
   const inputHandler = (newInput) => {
     if (!isSubmitting) setInput(newInput);
   };
 
+  /**
+   * Compares each chord in inputted array to the chord found in
+   * progressions state variable with same index.
+   *
+   * Chords are compared with their root and chordSymbol properties.
+   *
+   * If a chord does not equal its equivalent in progression, its index
+   * is pushed to incorrectIndices state variable.
+   *
+   * @param {Object[]} inputtedChords - represents chord
+   * @param {string} inputtedChords.root - root chord
+   * @param {string} inputtedChords.chordSymbol - chord modifiers
+   */
   const submitHandler = (inputtedChords) => {
-    console.log(inputtedChords);
-    console.log(progression);
     setSubmit(true);
     const incorrectIndices = [];
     for (let i = 0; i < progression.length; i++) {
@@ -72,6 +80,12 @@ export default function Training() {
     pausePlayback();
   };
 
+  /**
+   *
+   * @param {number[]} prog
+   * @param {number[]} prog[] - frequencies of notes in the chord
+   * @param {number} prog[][] - individual note frequency
+   */
   const playProgression = (prog) => {
     clearInterval(playbackIntervalId.current);
 

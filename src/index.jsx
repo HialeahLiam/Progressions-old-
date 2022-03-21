@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
-import Training from './routes/training';
-import Synthesizer from './routes/synthesizer';
+import Training from './components/routes/training';
+import Synthesizer from './components/routes/synthesizer';
 
 ReactDOM.render(
   <React.StrictMode>

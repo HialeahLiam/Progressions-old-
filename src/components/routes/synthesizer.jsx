@@ -1,6 +1,35 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import '../styles/Synthesizer.css';
+import '../../styles/Synthesizer.css';
+
+const client_id = '30f138fdc6fd4cd3a594f10d256a4e35';
+const client_secret = 'e92405addf56451097df4535c474a191';
+
+const Url = 'https://accounts.spotify.com/api/token';
+const Data = {
+  grant_type: 'client_credentials',
+};
+
+const otherParams = {
+  headers: {
+    Authorization: `Basic ${btoa(`${client_id}:${client_secret}`)}`,
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: 'grant_type=client_credentials',
+  method: 'POST',
+};
+
+let token = '';
+fetch(Url, otherParams)
+  .then((data) => data.json())
+  .then((res) => {
+    token = res.access_token;
+    console.log(res);
+  })
+  .catch((error) => console.log(error));
+
+console.log(`my token: ${token}`);
 
 function Synthesizer() {
   const [volume, setVolume] = useState(0.5);
@@ -10,6 +39,44 @@ function Synthesizer() {
   const mainGainNode = null;
   const sineTerms = null;
   const cosineTerms = null;
+
+  const handleClick = () => {
+    console.log(token);
+    let songID = '';
+    let songName = '';
+    fetch(
+      'https://api.spotify.com/v1/search?q=artist:radiohead+track:karma%20police&type=track',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application.json',
+        },
+      },
+    )
+      .then((data) => data.json())
+      .then((res) => {
+        console.log(res);
+        songID = res.tracks.items[0].id;
+        songName = res.tracks.items[0].name;
+        console.log(`${songID} ${songName}`);
+      })
+      .then(() => {
+        fetch(
+          `https://api.spotify.com/v1/audio-analysis/${songID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application.json',
+            },
+          },
+        )
+          .then((data) => data.json())
+          .then((res) => {
+            console.log(res);
+          });
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleVolumeChange = (event) => {
     setVolume(event.target.value);
@@ -80,6 +147,7 @@ function Synthesizer() {
           </select>
         </div>
       </div>
+      <button type="button" onClick={handleClick}>Spotify token</button>
     </>
   );
 }

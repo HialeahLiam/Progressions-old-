@@ -1,8 +1,35 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Button from './Button';
 import '../styles/ProgressionBar.css';
+
+const propTypes = {
+  incorrectSubmissions: PropTypes.arrayOf(PropTypes.number),
+  submitHandler: PropTypes.func.isRequired,
+  playHandler: PropTypes.func.isRequired,
+  nextHandler: PropTypes.func.isRequired,
+  input: PropTypes.oneOfType([
+    PropTypes.shape({
+      root: PropTypes.string,
+      chordSymbol: PropTypes.string,
+    }),
+    PropTypes.shape({
+      modifier: PropTypes.func,
+    }),
+  ]),
+  amountOfSlots: PropTypes.number.isRequired,
+  submit: PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+  incorrectSubmissions: [],
+  input: {
+    root: '',
+    chordSymbol: '',
+  },
+};
 
 function ProgressionBar({
   incorrectSubmissions, submitHandler,
@@ -62,22 +89,29 @@ function ProgressionBar({
     );
   }
 
-  const handleInput = (i) => {
+  const handleInput = (input) => {
     const newInput = [...inputs];
-    // chord symbol input, not root input
-    if (i.root.length < 1) {
+
+    // Checking if input is a new chord or a chord modifier
+    if (input.modifier) {
       let target = 0;
+
+      // Logic for selecting which chord to modify
       if (selectedByUser || reachedFinalSlot) {
         target = currentlySelectedSlot;
       } else {
         target = currentlySelectedSlot - 1;
       }
-      if (newInput[target]) newInput[target].chordSymbol = i.chordSymbol;
+      const chordToModify = newInput[target];
+
+      // Actual modification
+      if (chordToModify) {
+        newInput[target] = input.modifier(chordToModify);
+      }
     } else {
       setUserSelect(false);
 
-      newInput[currentlySelectedSlot] = i;
-      setInputs(newInput);
+      newInput[currentlySelectedSlot] = input;
       if (currentlySelectedSlot < amountOfSlots - 1) {
         selectSlot((slot) => slot + 1);
         setReachedFinalSlot(false);
@@ -85,6 +119,8 @@ function ProgressionBar({
         setReachedFinalSlot(true);
       }
     }
+    // Updating inputs with new chord object or modified chord object
+    setInputs(newInput);
   };
 
   const handleSubmit = () => {
@@ -110,25 +146,8 @@ function ProgressionBar({
   );
 }
 
-ProgressionBar.propTypes = {
-  incorrectSubmissions: PropTypes.arrayOf(PropTypes.number),
-  submitHandler: PropTypes.func.isRequired,
-  playHandler: PropTypes.func.isRequired,
-  nextHandler: PropTypes.func.isRequired,
-  input: PropTypes.shape({
-    root: PropTypes.string,
-    chordSymbol: PropTypes.string,
-  }),
-  amountOfSlots: PropTypes.number.isRequired,
-  submit: PropTypes.bool.isRequired,
-};
+ProgressionBar.propTypes = propTypes;
 
-ProgressionBar.defaultProps = {
-  incorrectSubmissions: [],
-  input: {
-    root: '',
-    chordSymbol: '',
-  },
-};
+ProgressionBar.defaultProps = defaultProps;
 
 export default ProgressionBar;

@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { makeMinor } from '../lib/progressions';
 
-function ModifierInputButton({ modifier, sendInput }) {
+function ModifierInputButton({ modifier, handler }) {
+  const input = {};
   let modifierString = '';
 
   const handleInput = () => {
-    sendInput({
-      root: '',
-      chordSymbol: modifierString,
-    });
+    // sendInput({
+    //   root: null,
+    //   chordSymbol: modifierString,
+    // });
+    handler(input);
   };
 
   switch (modifier) {
@@ -22,6 +25,11 @@ function ModifierInputButton({ modifier, sendInput }) {
 
     case 'diminished-seventh':
       modifierString = '\ue8707';
+      break;
+
+    case 'minor':
+      modifierString = 'm';
+      input.modifier = makeMinor;
       break;
 
     default:
@@ -40,7 +48,7 @@ function ModifierInputButton({ modifier, sendInput }) {
 }
 
 ModifierInputButton.propTypes = {
-  sendInput: PropTypes.func.isRequired,
+  handler: PropTypes.func.isRequired,
   modifier: PropTypes.string.isRequired,
 };
 
