@@ -1,13 +1,13 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import NavLink from './NavLink';
-import Button from './Button';
-import '../styles/NavBar.css';
+import NavLink from '../NavLink/NavLink';
+import Button from '../Button/Button';
+import styles from './NavBar.module.css';
 
 function NavBar() {
   return (
-    <nav className="nav">
-      <span className="logo">Progressions</span>
+    <nav className={styles.nav}>
+      <span className={styles.logo}>Progressions</span>
       <NavLink target="/training">training</NavLink>
       <NavLink target="">collections</NavLink>
       <NavLink target="">theory</NavLink>

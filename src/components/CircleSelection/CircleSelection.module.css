@@ -4,7 +4,7 @@
     justify-content: center;
 }
 
-.circle-container {
+.container {
     margin: auto auto;
     position: relative;
     display: flex;
@@ -13,7 +13,7 @@
     align-items: center;
 }
 
-.modifier-container {
+.modifier {
     position: absolute;
 
 }

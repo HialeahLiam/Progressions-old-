@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import CircleSelection from '../CircleSelection';
+import CircleSelection from '../CircleSelection/CircleSelection';
 import {
   randomProgression,
   randomDiatonicTriadGenerator,
@@ -7,9 +7,9 @@ import {
   // getDiatonicChords,
   convertChordsToFrequencies,
 } from '../../lib/progressions';
-import Header from '../Header';
-import ProgressionBar from '../ProgressionBar';
-import Button from '../Button';
+import Header from '../Header/Header';
+import ProgressionBar from '../ProgressionBar/ProgressionBar';
+import Button from '../Button/Button';
 
 const scale = Scale.MAJOR;
 

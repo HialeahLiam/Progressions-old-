@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ChordNode from './ChordNode';
-import { Scale, getDiatonicChords } from '../lib/progressions';
-import '../styles/CircleSelection.css';
-import Button from './Button';
-import ModifierInputButton from './ModifierInputButton';
+import ChordNode from '../ChordNode/ChordNode';
+import { Scale, getDiatonicChords } from '../../lib/progressions';
+import styles from './CircleSelection.module.css';
+import Button from '../Button/Button';
+import ModifierInputButton from '../ModifierInputButton/ModifierInputButton';
 
 const RADIUS_OF_NODES = 33;
 export default function CircleSelection({
@@ -27,9 +27,9 @@ export default function CircleSelection({
   }
 
   return (
-    <div className="circle">
+    <div className={styles.circle}>
       <div
-        className="circle-container"
+        className={styles.container}
         style={{
           width: `${2 * radius}px`,
           height: `${2 * radius + RADIUS_OF_NODES * 2}px`,
@@ -38,7 +38,7 @@ export default function CircleSelection({
         {nodes}
         <Button type="round" clickHandler={() => null}>root</Button>
         <div
-          className="modifier-container"
+          className={styles.modifier}
           style={{
             left: `calc(${radius * 2}px + 5vw)`,
           }}

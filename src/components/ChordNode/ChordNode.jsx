@@ -1,6 +1,6 @@
 import React from 'react';
-import '../styles/ChordNode.css';
 import PropTypes from 'prop-types';
+import styles from './ChordNode.module.css';
 
 export default function ChordNode({
   chord, sendInput, position, radius,
@@ -13,7 +13,7 @@ export default function ChordNode({
 
   return (
     <div
-      className="node"
+      className={styles.node}
       onClick={handleInput}
       onKeyPress={handleInput}
       tabIndex="0"
@@ -26,7 +26,7 @@ export default function ChordNode({
       }}
     >
       {chord.root}
-      <span className="symbol">
+      <span className={styles.symbol}>
         {' '}
         {chord.chordSymbol}
       </span>

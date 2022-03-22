@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Button from './Button';
-import '../styles/ProgressionBar.css';
+import Button from '../Button/Button';
+import styles from './ProgressionBar.module.css';
 
 const propTypes = {
   incorrectSubmissions: PropTypes.arrayOf(PropTypes.number),
@@ -60,10 +60,10 @@ function ProgressionBar({
   for (let i = 0; i < amountOfSlots; i++) {
     slotClasses.push(
       classNames(
-        'slot',
+        styles.slot,
         {
-          'selected-slot': !submit && currentlySelectedSlot === i,
-          incorrect: incorrectSubmissions.find((e) => e === i),
+          [styles.selectedSlot]: !submit && currentlySelectedSlot === i,
+          [styles.incorrect]: incorrectSubmissions.find((e) => e === i),
         },
       ),
     );
@@ -81,7 +81,7 @@ function ProgressionBar({
           ? (
             <>
               {inputs[i].root}
-              <span className="symbol">{inputs[i].chordSymbol}</span>
+              <span className={styles.symbol}>{inputs[i].chordSymbol}</span>
             </>
           )
           : ''}
@@ -136,9 +136,9 @@ function ProgressionBar({
   }, [input]);
 
   return (
-    <div className="bar">
+    <div className={styles.bar}>
       <Button type="round" clickHandler={playHandler}>play</Button>
-      <div className="container">
+      <div className={styles.container}>
         {slots}
       </div>
       {submit

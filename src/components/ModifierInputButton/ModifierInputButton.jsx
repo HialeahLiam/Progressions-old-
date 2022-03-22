@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { symbolStrings, makeMajor, makeMinor } from '../lib/progressions';
+import { symbolStrings, makeMajor, makeMinor } from '../../lib/progressions';
+import styles from './ModifierInputButton.module.css';
 
 function ModifierInputButton({ modifier, handler }) {
   const input = {};
@@ -46,7 +47,7 @@ function ModifierInputButton({ modifier, handler }) {
       type="button"
       onClick={handleInput}
     >
-      {modifierString}
+      <span className={styles.symbol}>{modifierString}</span>
 
     </button>
   );

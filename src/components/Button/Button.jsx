@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../styles/Button.css';
+import styles from './Button.module.css';
 
 const classNames = {
-  square: 'square',
-  round: 'round',
+  square: styles.square,
+  round: styles.round,
 };
 
 function Button({ clickHandler, children, type }) {
   return (
     <button
-      className={`${classNames[type]} button`}
+      className={`${classNames[type]} ${styles.button}`}
       onClick={clickHandler}
       type="button"
     >
