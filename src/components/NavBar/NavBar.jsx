@@ -1,5 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import NavLink from '../NavLink/NavLink';
 import Button from '../Button/Button';
 import styles from './NavBar.module.css';
@@ -12,7 +13,7 @@ function NavBar() {
       <NavLink target="">collections</NavLink>
       <NavLink target="">theory</NavLink>
       <NavLink target="/synthesizer">synthesizer</NavLink>
-      <Button type="square" clickHandler={() => 5}>login</Button>
+      <Link to="signup"><Button type="square" clickHandler={() => 5}>login</Button></Link>
     </nav>
   );
 }
