@@ -51,6 +51,7 @@ export default function Training() {
    * @param {string} inputtedChords.chordSymbol - chord modifiers
    */
   const submitHandler = (inputtedChords) => {
+    console.log(inputtedChords);
     setSubmit(true);
     const incorrectIndices = [];
     for (let i = 0; i < progression.length; i++) {

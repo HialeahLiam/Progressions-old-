@@ -1,6 +1,7 @@
 const symbolStrings = {
   aug: '\ue872',
   dim: '\ue870',
+  halfDim: 'ø',
 };
 
 const noteFreqs = [];
@@ -136,12 +137,18 @@ const makeMinor = (chord) => {
   // make copy so as to not modify the original chord object
   const newChord = {};
   newChord.root = chord.root.toLowerCase();
-  newChord.chordSymbol = chord.chordSymbol;
+
+  const regex = new RegExp(`${symbolStrings.dim}|${symbolStrings.halfDim}|${symbolStrings.aug}`);
+  newChord.chordSymbol = chord.chordSymbol.replace(regex, '');
+
   newChord.semitones = [...chord.semitones];
-  const minorThirdIndex = 1;
   const rootIndex = 0;
+  const minorThirdIndex = 1;
+  const fifthIndex = 2;
   const minorThirdInSemitones = 3;
+  const fifthInSemitones = 7;
   newChord.semitones[minorThirdIndex] = newChord.semitones[rootIndex] + minorThirdInSemitones;
+  newChord.semitones[fifthIndex] = newChord.semitones[rootIndex] + fifthInSemitones;
 
   return newChord;
 };
@@ -150,17 +157,70 @@ const makeMajor = (chord) => {
   // make copy so as to not modify the original chord object
   const newChord = {};
   newChord.root = chord.root.toUpperCase();
+
+  const regex = new RegExp(`${symbolStrings.dim}|${symbolStrings.halfDim}|${symbolStrings.aug}`);
+  newChord.chordSymbol = chord.chordSymbol.replace(regex, '');
+
+  newChord.semitones = [...chord.semitones];
+  const rootIndex = 0;
+  const majorThirdIndex = 1;
+  const fifthIndex = 2;
+  const majorThirdInSemitones = 4;
+  const fifthInSemitones = 7;
+  newChord.semitones[majorThirdIndex] = newChord.semitones[rootIndex] + majorThirdInSemitones;
+  newChord.semitones[fifthIndex] = newChord.semitones[rootIndex] + fifthInSemitones;
+
+  return newChord;
+};
+
+/**
+ *
+ * @param {Object} chord
+ * @param {string} chord.chordSymbol
+ */
+const makeAugmented = (chord) => {
+  const newChord = makeMajor(chord);
+  const fifthIndex = 2;
+  newChord.chordSymbol = `${symbolStrings.aug}${newChord.chordSymbol}`;
+  newChord.semitones[fifthIndex]++;
+
+  return newChord;
+};
+
+const makeDiminished = (chord) => {
+  const newChord = makeMinor(chord);
+  const fifthIndex = 2;
+  newChord.chordSymbol = `${symbolStrings.dim}${newChord.chordSymbol}`;
+  newChord.semitones[fifthIndex]--;
+
+  return newChord;
+};
+
+const addMajorSeventh = (chord) => {
+  const newChord = {};
+  newChord.root = chord.root;
   newChord.chordSymbol = chord.chordSymbol;
   newChord.semitones = [...chord.semitones];
-  const majorThirdIndex = 1;
-  const rootIndex = 0;
-  const majorThirdInSemitones = 4;
-  newChord.semitones[majorThirdIndex] = newChord.semitones[rootIndex] + majorThirdInSemitones;
+};
+
+const addSeventh = (chord) => {
+  const newChord = { ...chord };
+
+  return newChord;
+};
+
+const addDiminishedSeventh = (chord) => {
+  const newChord = { ...chord };
 
   return newChord;
 };
 
 export {
+  makeAugmented,
+  makeDiminished,
+  addDiminishedSeventh,
+  addSeventh,
+  addMajorSeventh,
   symbolStrings,
   makeMinor,
   makeMajor,

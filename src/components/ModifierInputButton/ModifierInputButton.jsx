@@ -1,6 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { symbolStrings, makeMajor, makeMinor } from '../../lib/progressions';
+import {
+
+  symbolStrings,
+  makeMajor,
+  makeMinor,
+  addMajorSeventh,
+  addSeventh,
+  addDiminishedSeventh,
+  makeAugmented,
+  makeDiminished,
+} from '../../lib/progressions';
 import styles from './ModifierInputButton.module.css';
 
 function ModifierInputButton({ modifier, handler }) {
@@ -18,14 +28,17 @@ function ModifierInputButton({ modifier, handler }) {
   switch (modifier) {
     case 'major-seventh':
       modifierString = 'M7';
+      input.modifier = addMajorSeventh;
       break;
 
-    case 'minor-seventh':
+    case 'seventh':
       modifierString = '7';
+      input.modifier = addSeventh;
       break;
 
-    case 'diminished-seventh':
-      modifierString = `${symbolStrings.dim}7`;
+    case 'half-diminished-seventh':
+      modifierString = `${symbolStrings.halfDim}7`;
+      input.modifier = addDiminishedSeventh;
       break;
 
     case 'minor':
@@ -36,6 +49,16 @@ function ModifierInputButton({ modifier, handler }) {
     case 'major':
       modifierString = 'M';
       input.modifier = makeMajor;
+      break;
+
+    case 'aug':
+      modifierString = symbolStrings.aug;
+      input.modifier = makeAugmented;
+      break;
+
+    case 'dim':
+      modifierString = symbolStrings.dim;
+      input.modifier = makeDiminished;
       break;
 
     default:

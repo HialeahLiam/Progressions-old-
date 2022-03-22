@@ -14,6 +14,7 @@ const propTypes = {
     PropTypes.shape({
       root: PropTypes.string,
       chordSymbol: PropTypes.string,
+      semitones: PropTypes.arrayOf(PropTypes.number),
     }),
     PropTypes.shape({
       modifier: PropTypes.func,
@@ -89,8 +90,9 @@ function ProgressionBar({
     );
   }
 
-  const handleInput = (input) => {
+  const handleInput = () => {
     const newInput = [...inputs];
+    // console.log('New chord: ');
 
     // Checking if input is a new chord or a chord modifier
     if (input.modifier) {
@@ -108,9 +110,10 @@ function ProgressionBar({
       if (chordToModify) {
         newInput[target] = input.modifier(chordToModify);
       }
+      // console.log(newInput[target].semitones);
     } else {
       setUserSelect(false);
-
+      // console.log(input.semitones);
       newInput[currentlySelectedSlot] = input;
       if (currentlySelectedSlot < amountOfSlots - 1) {
         selectSlot((slot) => slot + 1);
@@ -119,8 +122,7 @@ function ProgressionBar({
         setReachedFinalSlot(true);
       }
     }
-    console.log('New chord: ');
-    console.log(newInput);
+
     // Updating inputs with new chord object or modified chord object
     setInputs(newInput);
   };
@@ -132,7 +134,7 @@ function ProgressionBar({
   };
 
   useEffect(() => {
-    if (input) handleInput(input);
+    if (input) handleInput();
   }, [input]);
 
   return (

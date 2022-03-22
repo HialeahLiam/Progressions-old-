@@ -47,9 +47,11 @@ export default function CircleSelection({
           string to send as modifier in chord object */}
           <ModifierInputButton modifier="major" handler={sendInput} />
           <ModifierInputButton modifier="minor" handler={sendInput} />
-          <ModifierInputButton modifier="major-seventh" handler={() => { sendInput(); }} />
-          <ModifierInputButton modifier="minor-seventh" handler={() => { sendInput(); }} />
-          <ModifierInputButton modifier="diminished-seventh" handler={() => { sendInput(); }} />
+          <ModifierInputButton modifier="aug" handler={sendInput} />
+          <ModifierInputButton modifier="dim" handler={sendInput} />
+          <ModifierInputButton modifier="major-seventh" handler={sendInput} />
+          <ModifierInputButton modifier="seventh" handler={sendInput} />
+          <ModifierInputButton modifier="half-diminished-seventh" handler={sendInput} />
 
         </div>
       </div>
