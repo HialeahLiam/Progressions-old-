@@ -119,6 +119,8 @@ function ProgressionBar({
         setReachedFinalSlot(true);
       }
     }
+    console.log('New chord: ');
+    console.log(newInput);
     // Updating inputs with new chord object or modified chord object
     setInputs(newInput);
   };

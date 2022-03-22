@@ -1,3 +1,8 @@
+const symbolStrings = {
+  aug: '\ue872',
+  dim: '\ue870',
+};
+
 const noteFreqs = [];
 for (let octave = 0; octave < 9; octave++) {
   noteFreqs[octave] = [];
@@ -19,31 +24,38 @@ const majorDiatonicTriads = [
     root: 'I',
     chordSymbol: '',
     // first inner array represents root position, second is first inversion, etc.
-    relativeSemitones: [[0, 4, 7]],
+    semitones: [0, 4, 7],
+    inversion: 0,
   }, {
     root: 'ii',
     chordSymbol: '',
-    relativeSemitones: [[2, 5, 9]],
+    semitones: [2, 5, 9],
+    inversion: 0,
   }, {
     root: 'iii',
     chordSymbol: '',
-    relativeSemitones: [[4, 7, 11]],
+    semitones: [4, 7, 11],
+    inversion: 0,
   }, {
     root: 'IV',
     chordSymbol: '',
-    relativeSemitones: [[5, 9, 12]],
+    semitones: [5, 9, 12],
+    inversion: 0,
   }, {
     root: 'V',
     chordSymbol: '',
-    relativeSemitones: [[7, 11, 14]],
+    semitones: [7, 11, 14],
+    inversion: 0,
   }, {
     root: 'vi',
     chordSymbol: '',
-    relativeSemitones: [[9, 12, 16]],
+    semitones: [9, 12, 16],
+    inversion: 0,
   }, {
     root: 'vii',
-    chordSymbol: '\ue870',
-    relativeSemitones: [[11, 14, 17]],
+    chordSymbol: `${symbolStrings.dim}`,
+    semitones: [11, 14, 17],
+    inversion: 0,
   }];
 
 const Scale = {
@@ -102,7 +114,8 @@ const randomProgression = (chords, chordGenerator) => {
 
 const convertChordsToFrequencies = (chords, root, octave) => chords.map((chord) => {
   const chordFreqs = [];
-  chord.relativeSemitones[0].forEach((semitone, index) => {
+  // TODO: take inversions into account
+  chord.semitones.forEach((semitone, index) => {
     const semitoneRelToC = semitone + root;
     const additionalOctave = Math.floor(semitoneRelToC / 12);
     const note = semitoneRelToC % 12;
@@ -117,36 +130,43 @@ const convertChordsToFrequencies = (chords, root, octave) => chords.map((chord) 
  *@param {Object} chord
  * @param {string} chord.root
  * @param {string} chord.chordSymbol
- *@param {Object[]} chord.relativeSemitones
- @param {number[]} chord.relativeSemitones[]
+ *@param {number[]} chord.semitones
  */
 const makeMinor = (chord) => {
   // make copy so as to not modify the original chord object
   const newChord = {};
   newChord.root = chord.root.toLowerCase();
   newChord.chordSymbol = chord.chordSymbol;
-  let minorThirdIndex = 1;
-  let rootIndex = 0;
-  const minorThirdInSemitones = 4;
-  const numberOfInversions = chord.relativeSemitones.length;
-  newChord.relativeSemitones = chord.relativeSemitones.map((inversion) => {
-    // don't want to modify original inversion array because it should be
-    // read-only
-    const newInversion = [...inversion];
-    newInversion[minorThirdIndex] = newInversion[rootIndex] + minorThirdInSemitones;
-    rootIndex = rootIndex === 0
-      ? numberOfInversions - 1
-      : --rootIndex;
-    minorThirdIndex = minorThirdIndex === 0
-      ? numberOfInversions - 1
-      : --minorThirdIndex;
+  newChord.semitones = [...chord.semitones];
+  const minorThirdIndex = 1;
+  const rootIndex = 0;
+  const minorThirdInSemitones = 3;
+  newChord.semitones[minorThirdIndex] = newChord.semitones[rootIndex] + minorThirdInSemitones;
 
-    return newInversion;
-  });
+  return newChord;
+};
+
+const makeMajor = (chord) => {
+  // make copy so as to not modify the original chord object
+  const newChord = {};
+  newChord.root = chord.root.toUpperCase();
+  newChord.chordSymbol = chord.chordSymbol;
+  newChord.semitones = [...chord.semitones];
+  const majorThirdIndex = 1;
+  const rootIndex = 0;
+  const majorThirdInSemitones = 4;
+  newChord.semitones[majorThirdIndex] = newChord.semitones[rootIndex] + majorThirdInSemitones;
+
   return newChord;
 };
 
 export {
-  makeMinor, getDiatonicChords, randomProgression, randomDiatonicTriadGenerator, Scale,
+  symbolStrings,
+  makeMinor,
+  makeMajor,
+  getDiatonicChords,
+  randomProgression,
+  randomDiatonicTriadGenerator,
+  Scale,
   convertChordsToFrequencies,
 };

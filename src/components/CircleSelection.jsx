@@ -45,10 +45,8 @@ export default function CircleSelection({
         >
           {/* passing text as prop instead of child so that component can decide actual
           string to send as modifier in chord object */}
-          <ModifierInputButton
-            modifier="minor"
-            handler={sendInput}
-          />
+          <ModifierInputButton modifier="major" handler={sendInput} />
+          <ModifierInputButton modifier="minor" handler={sendInput} />
           <ModifierInputButton modifier="major-seventh" handler={() => { sendInput(); }} />
           <ModifierInputButton modifier="minor-seventh" handler={() => { sendInput(); }} />
           <ModifierInputButton modifier="diminished-seventh" handler={() => { sendInput(); }} />
