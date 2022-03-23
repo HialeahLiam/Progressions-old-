@@ -7,6 +7,7 @@ import App from './App';
 import Training from './components/routes/training';
 import Synthesizer from './components/routes/synthesizer';
 import SignUp from './components/SignUp/SignUp';
+import Login from './components/Login/Login';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ ReactDOM.render(
           <Route path="training" element={<Training />} />
           <Route path="synthesizer" element={<Synthesizer />} />
           <Route path="signup" element={<SignUp />} />
+          <Route path="login" element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>

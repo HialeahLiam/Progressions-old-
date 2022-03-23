@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
 function SignUp(props) {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -11,6 +13,13 @@ function SignUp(props) {
   const [loading, setLoading] = useState(false);
 
   const { currentUser, signUp } = useContext(AuthContext);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const from = location?.state?.from?.pathname || '/';
+  console.log('Location from signup:');
+  console.log(from);
 
   // eslint-disable-next-line consistent-return
   const handleSubmit = async (event) => {
@@ -24,16 +33,16 @@ function SignUp(props) {
       setError('');
       setLoading(true);
       await signUp(email, password);
+      navigate(from, { replace: true });
     } catch (e) {
-      console.log(`Something went wrong:\n\n${e.message}`);
-    }
+      setLoading(false);
 
-    setLoading(false);
-    // console.log('Form Submitted');
-    // console.log(`Email: ${email}`);
-    // console.log(`Password: ${password}`);
-    // console.log(`Password-confirm: ${passwordConfirm}`);
-    // console.log('Context:');
+      console.log(`Something went wrong:\n\n${e}`);
+    }
+  };
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
   };
 
   const handleEmailChange = (event) => {
@@ -53,6 +62,13 @@ function SignUp(props) {
       <h2>Sign Up</h2>
       {error && <h3>Passwords do not match</h3>}
       <form onSubmit={handleSubmit}>
+
+        <label htmlFor="email">
+          Username:
+          {/* The name attribute is used when sending data in a form submission. */}
+          <input type="text" name="username" value={username} onChange={handleUsernameChange} />
+        </label>
+
         <label htmlFor="email">
           Email:
           {/* The name attribute is used when sending data in a form submission. */}
@@ -72,7 +88,9 @@ function SignUp(props) {
 
       </form>
       <div>
-        Already have an account? Log in
+        Already have an account?
+        {' '}
+        <Link to="/login" state={{ from: location?.state?.from }}>Log in</Link>
       </div>
     </>
   );

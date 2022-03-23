@@ -1,6 +1,10 @@
 import React, { createContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword, onAuthStateChanged,
+
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { auth } from '../firebase';
 
 export const AuthContext = createContext(1);
@@ -10,6 +14,8 @@ function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const signUp = (email, password) => createUserWithEmailAndPassword(auth, email, password);
+
+  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
 
   useEffect(() => {
     // firebase return an Unsubscribe function to remove observer callback,
@@ -26,6 +32,7 @@ function AuthProvider({ children }) {
   const contextValue = {
     currentUser,
     signUp,
+    login,
   };
 
   return (
