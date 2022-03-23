@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
+import { auth } from '../../firebase';
 import '../../styles/Synthesizer.css';
 
 const client_id = '30f138fdc6fd4cd3a594f10d256a4e35';
@@ -25,11 +27,10 @@ fetch(Url, otherParams)
   .then((data) => data.json())
   .then((res) => {
     token = res.access_token;
+    console.log('Spotify access token:');
     console.log(res);
   })
   .catch((error) => console.log(error));
-
-console.log(`my token: ${token}`);
 
 function Synthesizer() {
   const [volume, setVolume] = useState(0.5);
@@ -39,6 +40,8 @@ function Synthesizer() {
   const mainGainNode = null;
   const sineTerms = null;
   const cosineTerms = null;
+
+  const { currentUser } = useContext(AuthContext);
 
   const handleClick = () => {
     console.log(token);
@@ -148,6 +151,13 @@ function Synthesizer() {
         </div>
       </div>
       <button type="button" onClick={handleClick}>Spotify token</button>
+
+      <h2>
+        Current user:
+        {currentUser && currentUser.email}
+      </h2>
+
+      <button type="button" onClick={() => auth.signOut(currentUser)}>Sign out</button>
     </>
   );
 }
