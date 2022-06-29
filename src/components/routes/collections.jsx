@@ -1,8 +1,14 @@
 import React from 'react';
+import Libraries from '../Libraries/Libraries';
+import ProgressionsDisplay from '../ProgressionsDisplay/ProgressionsDisplay';
+import './collections.css';
 
 function Collections() {
   return (
-    <div>collections</div>
+    <div className="collections-main">
+      <Libraries />
+      <ProgressionsDisplay />
+    </div>
   );
 }
 
