@@ -4,8 +4,9 @@ import './index.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import App from './App';
+import Collections from './components/routes/collections';
 import Training from './components/routes/training';
-import Synthesizer from './components/routes/synthesizer';
+// import Synthesizer from './components/routes/synthesizer';
 import SignUp from './components/SignUp/SignUp';
 import Login from './components/Login/Login';
 
@@ -15,7 +16,8 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<App />}>
           <Route path="training" element={<Training />} />
-          <Route path="synthesizer" element={<Synthesizer />} />
+          <Route path="collections" element={<Collections />} />
+          {/* <Route path="synthesizer" element={<Synthesizer />} /> */}
           <Route path="signup" element={<SignUp />} />
           <Route path="login" element={<Login />} />
         </Route>

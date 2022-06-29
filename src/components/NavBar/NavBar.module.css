@@ -1,16 +1,23 @@
-.logo {
-    font-weight: 400;
-    font-size: 19px;
-    letter-spacing: var(--main-letter-spacing);
-}
+
 
 .nav {
-    box-shadow: 0px 3px 6px rgb(0, 0, 0, 0.16);
+    /* box-shadow: 0px 3px 6px rgb(0, 0, 0, 0.16); */
     display: flex;
-    min-width: 100vw;
-    justify-content: space-between;
+    flex-direction: column;
+    /* min-width: 100vw; */
+    width: 20vw;
+    height: 100%;
+    /* justify-content: space-between; */
     align-items: center;
-    height: 62px;
-    padding: 0px 52px ;
+    border-right: 1px solid;
+    /* padding: 0px 52px ; */
    
+}
+
+.accountBox {
+    border-bottom: 1px solid;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 80px 0 20px;
 }

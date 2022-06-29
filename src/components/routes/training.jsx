@@ -7,7 +7,6 @@ import {
   // getDiatonicChords,
   convertChordsToFrequencies,
 } from '../../lib/progressions';
-import Header from '../Header/Header';
 import ProgressionBar from '../ProgressionBar/ProgressionBar';
 import Button from '../Button/Button';
 
@@ -157,7 +156,6 @@ export default function Training() {
 
   return (
     <div>
-      <Header>Progression Training</Header>
       {training
         ? (
           <>

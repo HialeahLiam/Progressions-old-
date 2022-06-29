@@ -11,11 +11,15 @@ function NavBar() {
 
   return (
     <nav className={styles.nav}>
-      <span className={styles.logo}>Progressions</span>
-      <NavLink target="/training">training</NavLink>
-      <NavLink target="">collections</NavLink>
-      <NavLink target="">theory</NavLink>
-      <NavLink target="/synthesizer">synthesizer</NavLink>
+      <div className={styles.accountBox}>
+        <div className={styles.account}>
+          <span className={styles.username}>Username</span>
+        </div>
+      </div>
+      <NavLink target="/training">Training</NavLink>
+      <NavLink target="/collections">Collections</NavLink>
+      {/* <NavLink target="">theory</NavLink>
+      <NavLink target="/synthesizer">synthesizer</NavLink> */}
       <Button
         type="square"
         clickHandler={() => {

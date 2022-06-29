@@ -7,8 +7,15 @@ import AuthProvider from './contexts/AuthContext';
 function App() {
   return (
     <AuthProvider>
-      <NavBar />
-      <Outlet />
+      <div className="whole">
+        <NavBar />
+        <div className="main">
+          <div className="logo">
+            <h1>Progressions</h1>
+          </div>
+          <Outlet />
+        </div>
+      </div>
     </AuthProvider>
   );
 }
