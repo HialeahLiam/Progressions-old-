@@ -8,3 +8,18 @@
     padding-top: 2%;
 
 }
+
+.libraryTabs {
+    display: flex;
+}
+
+.tab {
+    border-bottom: 1px solid;
+    padding: 10px 30px;
+
+}
+
+.activeTab {
+    composes: tab;
+    border-bottom: 3px solid;
+}
