@@ -93,16 +93,18 @@ function Libraries() {
         </button>
       </nav>
       <div className={styles.collections}>
-        {collections.map(({
-          title, type, upvotes, downvotes, user,
-        }) => (
-          <CollectionCard
-            key={`${title}-${user}`}
-            {... {
-              title, type, upvotes, downvotes, user,
-            }}
-          />
-        ))}
+        <div className={styles.scrollContainer}>
+          {collections.map(({
+            title, type, upvotes, downvotes, user,
+          }) => (
+            <CollectionCard
+              key={`${title}-${user}`}
+              {... {
+                title, type, upvotes, downvotes, user,
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

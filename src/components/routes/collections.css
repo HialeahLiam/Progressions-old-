@@ -1,5 +1,7 @@
 .collections-main {
     display: flex;
+    align-items: stretch;
+    flex: 1;
     height: 100%;
 }
 

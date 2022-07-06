@@ -6,8 +6,8 @@ import AuthProvider from './contexts/AuthContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="whole">
+    <div className="whole">
+      <AuthProvider>
         <NavBar />
         <div className="main">
           <div className="logo">
@@ -18,8 +18,8 @@ function App() {
             <Outlet />
           </div>
         </div>
-      </div>
-    </AuthProvider>
+      </AuthProvider>
+    </div>
   );
 }
 
