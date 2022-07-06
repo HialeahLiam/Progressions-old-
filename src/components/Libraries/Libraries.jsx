@@ -1,6 +1,59 @@
 import React, { useState } from 'react';
+import CollectionCard from '../CollectionCard/CollectionCard';
 import LibrarySearch from '../LibrarySearch/LibrarySearch';
 import styles from './Libraries.module.css';
+
+const collections = [
+  {
+    title: 'Smells Like Teen Spirit - Nirvana',
+    type: 'Collection',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+  },
+  {
+    title: 'Radiohead',
+    type: 'Collection',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+  },
+  {
+    title: 'Radiohead',
+    type: 'Collection',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+  },
+  {
+    title: 'Radiohead',
+    type: 'Collection',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+  },
+  {
+    title: 'Radiohead',
+    type: 'Collection',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+  },
+  {
+    title: 'Radiohead',
+    type: 'Collection',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+  },
+  {
+    title: 'Radiohead',
+    type: 'Collection',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+  },
+];
 
 function Libraries() {
   const [library, setLibrary] = useState('public');
@@ -17,27 +70,39 @@ function Libraries() {
   return (
     <div className={styles.container}>
       <LibrarySearch />
-      <div className={styles.libraryTabs}>
-        <div
+      <nav className={styles.libraryTabs}>
+        <button
           className={`${styles.tab} ${library === 'personal' ? styles.activeTab : null}`}
           onClick={(e) => handleTabClick('personal', e)}
           onKeyDown={(e) => handleTabClick('personal', e)}
           tabIndex={0}
-          role="button"
+          type="button"
         >
           Personal
 
-        </div>
-        <div
+        </button>
+        <button
           className={`${styles.tab} ${library === 'public' ? styles.activeTab : null}`}
           onClick={(e) => handleTabClick('public', e)}
           onKeyDown={(e) => handleTabClick('public', e)}
           tabIndex={0}
-          role="button"
+          type="button"
         >
           Public
 
-        </div>
+        </button>
+      </nav>
+      <div className={styles.collections}>
+        {collections.map(({
+          title, type, upvotes, downvotes, user,
+        }) => (
+          <CollectionCard
+            key={`${title}-${user}`}
+            {... {
+              title, type, upvotes, downvotes, user,
+            }}
+          />
+        ))}
       </div>
     </div>
   );

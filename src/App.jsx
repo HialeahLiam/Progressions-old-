@@ -13,7 +13,10 @@ function App() {
           <div className="logo">
             <h1>Progressions</h1>
           </div>
-          <Outlet />
+
+          <div className="content">
+            <Outlet />
+          </div>
         </div>
       </div>
     </AuthProvider>

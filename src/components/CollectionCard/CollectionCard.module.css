@@ -1,0 +1,58 @@
+.container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    
+}
+
+.card {
+    border: 1px solid;
+    flex-grow: 1;
+    padding: 6px 10px;
+}
+
+.footerData {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.type {
+font-weight: 400;
+font-size: 11px;
+color: rgba(0, 0, 0, 0.6);
+margin-bottom: 5px;
+
+}
+
+.label {
+    font-weight: 500;
+    font-size: 11px;
+    /* letter-spacing: -0.02em; */
+    color: rgba(0, 0, 0, 0.6);
+
+}
+.addButtons {
+    display: flex;
+    flex-direction: column;
+}
+
+.upvotes {
+    composes: label;
+    padding: 0 5px
+}
+
+.downvotes {
+    composes: label;
+}
+
+.user {
+    composes: label;
+    max-width: 30%;
+    overflow-wrap: break-word;
+    
+}
+
+.title {
+    margin-bottom: 5px;
+}
