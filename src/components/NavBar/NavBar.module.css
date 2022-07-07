@@ -11,6 +11,12 @@
    
 }
 
+@media (max-width: 800px) {
+    .nav {
+
+    }
+}
+
 .accountBox {
     border-bottom: 1px solid;
     width: 100%;

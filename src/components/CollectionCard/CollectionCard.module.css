@@ -18,11 +18,6 @@
     width: 250px;
 }
 
-@media (max-width: 1200px) {
-    .card {
-        width: 150px
-    }
-}
 
 .clickArea {
     display: flex;
@@ -54,19 +49,18 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    margin-right: 5px
+    margin-right: 5px;
 }
 
 .type {
-font-weight: 400;
-font-size: 11px;
-color: rgba(0, 0, 0, 0.6);
-margin-bottom: 5px;
+    font-weight: 400;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 5px;
 }
 
 .icon {
-    scale: 0.8;
-    /* background-color: red; */
+    transform: scale(0.7);
 }
 
 .label {
@@ -74,7 +68,7 @@ margin-bottom: 5px;
     font-size: 11px;
     /* letter-spacing: -0.02em; */
     color: rgba(0, 0, 0, 0.6);
-
+    
 }
 .addButtons {
     display: flex;
@@ -83,11 +77,11 @@ margin-bottom: 5px;
 
 .addPlus {
     margin-bottom: 15px;
-
+    
 }
 
 .addCircle {
-
+    
 }
 
 .upvotes {
@@ -107,11 +101,36 @@ margin-bottom: 5px;
     margin-bottom: 5px;
 }
 
-/* @media (max-width: 1390px) {
+@media (max-width: 1200px) {
+    .card {
+        min-width: 150px;
+        max-width: 150px;
+    }
+}
 
-    .dataRow {
-        flex-direction: column;
-        align-items: baseline;
+@media (max-width: 800px) {
+    .card {
+        min-width: 100px;
+        max-width: 100px;
     }
 
-} */
+    .icon {
+        transform: scale(0.5);
+    }
+
+    .type {
+        font-size: 8px;
+    }
+
+    .data {
+        margin-bottom: -7px;
+    }
+
+    .label {
+        font-size: 8px;
+    }
+
+    .title {
+        font-size: 12px;
+    }
+}
