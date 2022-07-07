@@ -58,6 +58,17 @@ button {
 
 :root {
   --main-letter-spacing: 3pt;
+  --subtitle-size: 11px;
+  --subtitle-size-small: 8px;
+  --subtitle-color: rgba(0, 0, 0, 0.6);
+
+  --label-size: 11px;
+  --label-size-small: 8px;
+  --label-color: rgba(0, 0, 0, 0.6);
+  --label-weight: 500;
+
+  --thin-header-weight: 300;
+  --thin-header-size: 30px;
 }
 
 h1 {

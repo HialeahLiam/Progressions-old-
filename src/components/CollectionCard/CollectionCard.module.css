@@ -53,9 +53,8 @@
 }
 
 .type {
-    font-weight: 400;
-    font-size: 11px;
-    color: rgba(0, 0, 0, 0.6);
+    font-size: var(--subtitle-size);
+    color: var(--subtitle-color);
     margin-bottom: 5px;
 }
 
@@ -64,12 +63,11 @@
 }
 
 .label {
-    font-weight: 500;
-    font-size: 11px;
-    /* letter-spacing: -0.02em; */
-    color: rgba(0, 0, 0, 0.6);
-    
+    font-weight: var(--label-weight);
+    font-size: var(--label-size);
+    color: var(--label-color)
 }
+
 .addButtons {
     display: flex;
     flex-direction: column;
@@ -119,7 +117,7 @@
     }
 
     .type {
-        font-size: 8px;
+        font-size: var(--subtitle-size-small);
     }
 
     .data {
@@ -127,7 +125,7 @@
     }
 
     .label {
-        font-size: 8px;
+        font-size: var(--label-size-small)
     }
 
     .title {

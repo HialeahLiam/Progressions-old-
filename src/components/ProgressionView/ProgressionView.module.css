@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.mainSection {
+    display: flex;
+}
+
+.titleAndStats {
+    background-color: red;
+    flex: 1;
+}
+
+.label {
+    font-size: var(--label-size);
+    font-weight: var(--label-weight);
+}
+
+.subtitle {
+    font-size: var(--subtitle-size);
+    font-weight: var(--subtitle-weight);
+    color: var(--subtitle-color)
+}
+
+.title {
+    font-size: var(--thin-header-size);
+    font-weight: var(--thin-header-weight);
+}
+
+.middle {
+    flex: 2;
+    background-color: blue;
+}
+
+.youtube { 
+    background-color: purple;
+    flex: 1;
+}

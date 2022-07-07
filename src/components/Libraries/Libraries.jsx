@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import CollectionCard from '../CollectionCard/CollectionCard';
 import LibrarySearch from '../LibrarySearch/LibrarySearch';
 import styles from './Libraries.module.css';
@@ -35,6 +36,8 @@ const collections = [
             downvotes: 123,
             upvotes: 321,
             user: 'HialeahLiam',
+            song: 'My Kind of Woman',
+            artist: 'Mac Demarco',
             root: 9,
             mode: 'major',
             parent_collection_id: '62c6ea7432521f13af2674de',
@@ -45,6 +48,8 @@ const collections = [
             downvotes: 123,
             upvotes: 321,
             user: 'HialeahLiam',
+            song: 'My Kind of Woman',
+            artist: 'Mac Demarco',
             root: 9,
             mode: 'major',
             parent_collection_id: '62c6ea7432521f13af2674de',
@@ -66,6 +71,8 @@ const collections = [
             downvotes: 123,
             upvotes: 321,
             user: 'HialeahLiam',
+            song: 'Freaking Out The Neighborhood',
+            artist: 'Mac Demarco',
             root: 9,
             mode: 'major',
             parent_collection_id: '62c6ea7432521f13af2674df',
@@ -111,7 +118,7 @@ const collections = [
   },
 ];
 
-function Libraries() {
+function Libraries({ showProgressions }) {
   const [library, setLibrary] = useState('public');
 
   const handleTabClick = (lib, e) => {
@@ -150,12 +157,16 @@ function Libraries() {
         <div className={styles.scrollContainer}>
           {collections.map((c) => (
             // eslint-disable-next-line no-underscore-dangle
-            <CollectionCard key={c._id} collections={c} />
+            <CollectionCard showProgressions={showProgressions} key={c._id} collections={c} />
           ))}
         </div>
       </div>
     </div>
   );
 }
+
+Libraries.propTypes = {
+  showProgressions: PropTypes.func.isRequired,
+};
 
 export default Libraries;

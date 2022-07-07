@@ -1,0 +1,26 @@
+.label {
+    font-weight: var(--label-weight);
+    font-size: var(--label-size);
+    color: var(--label-color)
+}
+
+.label400 {
+    composes: label;
+    font-weight: 400;
+}
+
+.label500 {
+    composes: label;
+    font-weight: 500;
+}
+
+.icon {
+    transform: scale(0.7);
+}
+
+.data {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-right: 5px;
+}
