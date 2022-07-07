@@ -18,6 +18,12 @@
     width: 250px;
 }
 
+@media (max-width: 1200px) {
+    .card {
+        width: 150px
+    }
+}
+
 .clickArea {
     display: flex;
     flex-direction: column;
