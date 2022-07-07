@@ -1,5 +1,11 @@
 @font-face {
   font-family: jost;
+  src: url('../fonts/Jost/OpenType/Jost-200-Thin.otf') format('opentype');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: jost;
   src: url('../fonts/Jost/OpenType/Jost-300-Light.otf') format('opentype');
   font-weight: 300;
 }

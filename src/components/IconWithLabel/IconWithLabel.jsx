@@ -46,7 +46,10 @@ IconWithLabel.defaultProps = {
 
 IconWithLabel.propTypes = {
   icon: PropTypes.string.isRequired,
-  labelText: PropTypes.string,
+  labelText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   labelWeight: PropTypes.number,
 };
 

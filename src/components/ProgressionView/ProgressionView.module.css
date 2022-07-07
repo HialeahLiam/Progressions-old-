@@ -8,8 +8,12 @@
 }
 
 .titleAndStats {
-    background-color: red;
-    flex: 1;
+    /* background-color: red; */
+    flex: 1
+ }
+
+.votes {
+    display: flex;
 }
 
 .label {
@@ -19,7 +23,6 @@
 
 .subtitle {
     font-size: var(--subtitle-size);
-    font-weight: var(--subtitle-weight);
     color: var(--subtitle-color)
 }
 
@@ -28,12 +31,49 @@
     font-weight: var(--thin-header-weight);
 }
 
+.by {
+    font-weight: 400;
+    padding: 0 5px;
+}
+
 .middle {
     flex: 2;
-    background-color: blue;
+    /* background-color: blue; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .youtube { 
-    background-color: purple;
+    /* background-color: purple; */
     flex: 1;
+}
+
+.soundwaveRow {
+    height: 50px;
+    width: 75%;
+    background-color: gray;
+}
+
+.musicInfoRow {
+    display: flex;
+    font-weight: 200;
+    font-size: 19px;
+
+}
+
+.musicInfo {
+    margin-bottom: 40px;
+}
+
+.musicLeft {
+    flex: 1;
+}
+
+.musicRight {
+    flex: 1;
+}
+
+.trackInfo {
+    margin-bottom: 20px;
 }

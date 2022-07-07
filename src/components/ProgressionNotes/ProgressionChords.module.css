@@ -1,0 +1,7 @@
+.container {
+    display: flex;
+}
+
+.chord {
+    padding: 0 5px;
+}
