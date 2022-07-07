@@ -1,8 +1,14 @@
 .container {
     margin-bottom: 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.collection {
+    display: flex;
+    align-items: center;
 }
 
 .card {
@@ -12,10 +18,30 @@
     width: 250px;
 }
 
+.clickArea {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+
 .dataRow {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+}
+
+.collections {
+    display: flex;
+    align-items: flex-start;
+}
+
+.backArrow {
+    margin-top: 10px;
 }
 
 .data {
@@ -49,6 +75,15 @@ margin-bottom: 5px;
     flex-direction: column;
 }
 
+.addPlus {
+    margin-bottom: 15px;
+
+}
+
+.addCircle {
+
+}
+
 .upvotes {
     composes: label;
 }
@@ -62,6 +97,7 @@ margin-bottom: 5px;
 }
 
 .title {
+    text-align: left;
     margin-bottom: 5px;
 }
 

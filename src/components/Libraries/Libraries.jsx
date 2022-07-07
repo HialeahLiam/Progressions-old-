@@ -5,6 +5,7 @@ import styles from './Libraries.module.css';
 
 const collections = [
   {
+    _id: '62c6ea7432521f13af267445',
     title: 'Smells Like Teen Spirit - Nirvana',
     type: 'Collection',
     downvotes: 123,
@@ -12,43 +13,98 @@ const collections = [
     user: 'HialeahLiam',
   },
   {
+    _id: '62c6ea7432521f13af2674db',
+    title: 'Mac Demarco',
+    downvotes: 123,
+    upvotes: 321,
+    user: 'HialeahLiam',
+    entry_type: 'collection',
+    entries: [
+      {
+        _id: '62c6ea7432521f13af2674de',
+        title: 'My Kind of Woman',
+        downvotes: 123,
+        upvotes: 321,
+        user: 'HialeahLiam',
+        parent_collection_id: '62c6ea7432521f13af2674db',
+        entry_type: 'progression',
+        entries: [
+          {
+            _id: '62c6ea7432521f13af2674e2',
+            title: 'My Kind of Woman - Verse',
+            downvotes: 123,
+            upvotes: 321,
+            user: 'HialeahLiam',
+            root: 9,
+            mode: 'major',
+            parent_collection_id: '62c6ea7432521f13af2674de',
+          },
+          {
+            _id: '62c6ea7432521f13af2674e3',
+            title: 'My Kind of Woman - Chorus',
+            downvotes: 123,
+            upvotes: 321,
+            user: 'HialeahLiam',
+            root: 9,
+            mode: 'major',
+            parent_collection_id: '62c6ea7432521f13af2674de',
+          },
+        ],
+      },
+      {
+        _id: '62c6ea7432521f13af2674df',
+        title: 'Freaking Out The Neighborhood',
+        downvotes: 123,
+        upvotes: 321,
+        user: 'HialeahLiam',
+        parent_collection_id: '62c6ea7432521f13af2674db',
+        entry_type: 'progression',
+        entries: [
+          {
+            _id: '62c6ea7432521f13af2674e4',
+            title: 'Freaking Out The Neighborhood - Intro',
+            downvotes: 123,
+            upvotes: 321,
+            user: 'HialeahLiam',
+            root: 9,
+            mode: 'major',
+            parent_collection_id: '62c6ea7432521f13af2674df',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    _id: '62c6ea7432521f13af267446',
     title: 'Radiohead',
-    type: 'Collection',
     downvotes: 123,
     upvotes: 321,
     user: 'HialeahLiam',
   },
   {
+    _id: '62c6ea7432521f13af267448',
     title: 'Radiohead',
-    type: 'Collection',
     downvotes: 123,
     upvotes: 321,
     user: 'HialeahLiam',
   },
   {
+    _id: '62c6ea7432521f13af267449',
     title: 'Radiohead',
-    type: 'Collection',
     downvotes: 123,
     upvotes: 321,
     user: 'HialeahLiam',
   },
   {
+    _id: '62c6ea7432521f13af2',
     title: 'Radiohead',
-    type: 'Collection',
     downvotes: 123,
     upvotes: 321,
     user: 'HialeahLiam',
   },
   {
+    _id: '62c6ea7432521f13af267125',
     title: 'Radiohead',
-    type: 'Collection',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-  },
-  {
-    title: 'Radiohead',
-    type: 'Collection',
     downvotes: 123,
     upvotes: 321,
     user: 'HialeahLiam',
@@ -57,8 +113,6 @@ const collections = [
 
 function Libraries() {
   const [library, setLibrary] = useState('public');
-
-  console.log(library);
 
   const handleTabClick = (lib, e) => {
     if (e.type === 'keydown' && e.key !== 'Enter') {
@@ -94,15 +148,9 @@ function Libraries() {
       </nav>
       <div className={styles.collections}>
         <div className={styles.scrollContainer}>
-          {collections.map(({
-            title, type, upvotes, downvotes, user,
-          }) => (
-            <CollectionCard
-              key={`${title}-${user}`}
-              {... {
-                title, type, upvotes, downvotes, user,
-              }}
-            />
+          {collections.map((c) => (
+            // eslint-disable-next-line no-underscore-dangle
+            <CollectionCard key={c._id} collections={c} />
           ))}
         </div>
       </div>
