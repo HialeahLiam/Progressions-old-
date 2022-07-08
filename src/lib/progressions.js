@@ -1,7 +1,9 @@
-const symbolStrings = {
+const SymbolStrings = {
   aug: '\ue872',
   dim: '\ue870',
   halfDim: 'ø',
+  flat: '\ue260',
+  sharp: '\ue262',
 };
 
 const noteFreqs = [];
@@ -54,7 +56,7 @@ const majorDiatonicTriads = [
     inversion: 0,
   }, {
     root: 'vii',
-    chordSymbol: `${symbolStrings.dim}`,
+    chordSymbol: `${SymbolStrings.dim}`,
     semitones: [11, 14, 17],
     inversion: 0,
   }];
@@ -113,7 +115,7 @@ const randomProgression = (chords, chordGenerator) => {
   return progression;
 };
 
-const convertChordsToFrequencies = (chords, root, octave) => chords.map((chord) => {
+const convertToFrequencies = (chords, root, octave) => chords.map((chord) => {
   const chordFreqs = [];
   // TODO: take inversions into account
   chord.semitones.forEach((semitone, index) => {
@@ -138,7 +140,7 @@ const makeMinor = (chord) => {
   const newChord = {};
   newChord.root = chord.root.toLowerCase();
 
-  const regex = new RegExp(`${symbolStrings.dim}|${symbolStrings.halfDim}|${symbolStrings.aug}`);
+  const regex = new RegExp(`${SymbolStrings.dim}|${SymbolStrings.halfDim}|${SymbolStrings.aug}`);
   newChord.chordSymbol = chord.chordSymbol.replace(regex, '');
 
   newChord.semitones = [...chord.semitones];
@@ -158,7 +160,7 @@ const makeMajor = (chord) => {
   const newChord = {};
   newChord.root = chord.root.toUpperCase();
 
-  const regex = new RegExp(`${symbolStrings.dim}|${symbolStrings.halfDim}|${symbolStrings.aug}`);
+  const regex = new RegExp(`${SymbolStrings.dim}|${SymbolStrings.halfDim}|${SymbolStrings.aug}`);
   newChord.chordSymbol = chord.chordSymbol.replace(regex, '');
 
   newChord.semitones = [...chord.semitones];
@@ -181,7 +183,7 @@ const makeMajor = (chord) => {
 const makeAugmented = (chord) => {
   const newChord = makeMajor(chord);
   const fifthIndex = 2;
-  newChord.chordSymbol = `${symbolStrings.aug}${newChord.chordSymbol}`;
+  newChord.chordSymbol = `${SymbolStrings.aug}${newChord.chordSymbol}`;
   newChord.semitones[fifthIndex]++;
 
   return newChord;
@@ -190,7 +192,7 @@ const makeAugmented = (chord) => {
 const makeDiminished = (chord) => {
   const newChord = makeMinor(chord);
   const fifthIndex = 2;
-  newChord.chordSymbol = `${symbolStrings.dim}${newChord.chordSymbol}`;
+  newChord.chordSymbol = `${SymbolStrings.dim}${newChord.chordSymbol}`;
   newChord.semitones[fifthIndex]--;
 
   return newChord;
@@ -215,18 +217,101 @@ const addDiminishedSeventh = (chord) => {
   return newChord;
 };
 
+const ROOTS = {
+  0: 'I',
+  1: `${SymbolStrings.flat}II`,
+  2: 'II',
+  3: `${SymbolStrings.flat}III`,
+  4: 'III',
+  5: 'IV',
+  6: `${SymbolStrings.flat}V`,
+  7: 'V',
+  8: `${SymbolStrings.flat}VI`,
+  9: 'VI',
+  10: `${SymbolStrings.flat}VII`,
+  11: 'VII',
+};
+
+const Intervals = {
+  MINOR_THIRD: 3,
+  MAJOR_THIRD: 4,
+  FOURTH: 5,
+  DIM_FIFTH: 6,
+  FIFTH: 7,
+  AUG_FIFTH: 8,
+  DIM_SEVENTH: 9,
+  MINOR_SEVENTH: 10,
+  MAJOR_SEVENTH: 11,
+};
+
+function convertSemitonesToChordString(semitones) {
+  const n = semitones.length;
+  const root = semitones[0];
+  const third = semitones[1];
+
+  let chordString = ROOTS[root];
+
+  if (third - root === Intervals.MINOR_THIRD) {
+    chordString = chordString.toLowerCase();
+  }
+
+  if (n === 3) { // triad
+    const fifth = semitones[2];
+    if (fifth - root === Intervals.DIM_FIFTH) chordString += SymbolStrings.dim;
+    else if (fifth - root === Intervals.AUG_FIFTH) chordString += SymbolStrings.aug;
+  } else if (n === 4) { // seventh chord
+    const fifth = semitones[2];
+    const seventh = semitones[3];
+    // perfect fifth
+    if (fifth - root === Intervals.AUG_FIFTH) {
+      chordString += 'aug';
+    }
+    switch (seventh - root) {
+      case Intervals.MAJOR_SEVENTH:
+        chordString += 'M7';
+        break;
+      case Intervals.MINOR_SEVENTH:
+        chordString += '7';
+        break;
+
+      case Intervals.DIM_SEVENTH:
+        chordString += 'dim7';
+        break;
+      default:
+    }
+
+    if (fifth - root === Intervals.DIM_FIFTH && seventh - root !== Intervals.DIM_SEVENTH) {
+      chordString += 'b5';
+    }
+  } else if (n === 5) { // ninth chord
+    console.log('nothing');
+  } else if (n === 6) { // 13th chord
+    console.log('nothing');
+  }
+
+  return chordString;
+}
+
+function Chord(semitones) {
+  this.chord = []; // in semitones
+  this.convertSemitonesToChordString = convertSemitonesToChordString;
+  this.chordString = this.convertSemitonesToChordString(semitones);
+}
+
 export {
+  chords,
   makeAugmented,
   makeDiminished,
   addDiminishedSeventh,
   addSeventh,
   addMajorSeventh,
-  symbolStrings,
+  SymbolStrings,
   makeMinor,
   makeMajor,
   getDiatonicChords,
   randomProgression,
   randomDiatonicTriadGenerator,
   Scale,
-  convertChordsToFrequencies,
+  convertToFrequencies,
+  Chord,
 };

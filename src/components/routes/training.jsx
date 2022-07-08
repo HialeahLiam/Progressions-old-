@@ -5,7 +5,7 @@ import {
   randomDiatonicTriadGenerator,
   Scale,
   // getDiatonicChords,
-  convertChordsToFrequencies,
+  convertSemitonesToFrequencies,
 } from '../../lib/progressions';
 import ProgressionBar from '../ProgressionBar/ProgressionBar';
 import Button from '../Button/Button';
@@ -115,7 +115,7 @@ export default function Training() {
   };
 
   const playHandler = () => {
-    playProgression(convertChordsToFrequencies(progression, 2, 4));
+    playProgression(convertSemitonesToFrequencies(progression, 2, 4));
   };
 
   const beginTrainingHandler = () => {
