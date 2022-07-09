@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CollectionCard from '../CollectionCard/CollectionCard';
 import LibrarySearch from '../LibrarySearch/LibrarySearch';
 import styles from './Libraries.module.css';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const collections = [
   {
@@ -120,10 +122,17 @@ const collections = [
 
 function Libraries({ showProgressions }) {
   const [library, setLibrary] = useState('public');
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleTabClick = (lib, e) => {
     if (e.type === 'keydown' && e.key !== 'Enter') {
       return;
+    }
+
+    if (lib === 'personal' && !currentUser) {
+      navigate('/login', { state: { from: location } });
     }
     setLibrary(lib);
   };
@@ -170,4 +179,3 @@ Libraries.propTypes = {
 };
 
 export default Libraries;
-

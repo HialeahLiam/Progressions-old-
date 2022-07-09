@@ -115,7 +115,7 @@ const randomProgression = (chords, chordGenerator) => {
   return progression;
 };
 
-const convertToFrequencies = (chords, root, octave) => chords.map((chord) => {
+const convertSemitonesToFrequencies = (chords, root, octave) => chords.map((chord) => {
   const chordFreqs = [];
   // TODO: take inversions into account
   chord.semitones.forEach((semitone, index) => {
@@ -285,7 +285,9 @@ function convertSemitonesToChordString(semitones) {
     }
   } else if (n === 5) { // ninth chord
     console.log('nothing');
-  } else if (n === 6) { // 13th chord
+  } else if (n === 6) { // 11th chord
+    console.log('nothing');
+  } else if (n === 7) { // 13th chord
     console.log('nothing');
   }
 
@@ -312,6 +314,6 @@ export {
   randomProgression,
   randomDiatonicTriadGenerator,
   Scale,
-  convertToFrequencies,
+  convertSemitonesToFrequencies,
   Chord,
 };

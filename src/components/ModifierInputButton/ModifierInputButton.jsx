@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
 
-  symbolStrings,
+  SymbolStrings,
   makeMajor,
   makeMinor,
   addMajorSeventh,
@@ -37,7 +37,7 @@ function ModifierInputButton({ modifier, handler }) {
       break;
 
     case 'half-diminished-seventh':
-      modifierString = `${symbolStrings.halfDim}7`;
+      modifierString = `${SymbolStrings.halfDim}7`;
       input.modifier = addDiminishedSeventh;
       break;
 
@@ -52,12 +52,12 @@ function ModifierInputButton({ modifier, handler }) {
       break;
 
     case 'aug':
-      modifierString = symbolStrings.aug;
+      modifierString = SymbolStrings.aug;
       input.modifier = makeAugmented;
       break;
 
     case 'dim':
-      modifierString = symbolStrings.dim;
+      modifierString = SymbolStrings.dim;
       input.modifier = makeDiminished;
       break;
 

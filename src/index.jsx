@@ -7,8 +7,8 @@ import App from './App';
 import Collections from './components/routes/collections';
 import Training from './components/routes/training';
 // import Synthesizer from './components/routes/synthesizer';
-import SignUp from './components/SignUp/SignUp';
-import Login from './components/Login/Login';
+import SignUp from './components/routes/SignUp';
+import Login from './components/routes/Login';
 
 ReactDOM.render(
   <React.StrictMode>
