@@ -25,7 +25,7 @@ function Login() {
     try {
       setError('');
       setLoading(true);
-      await login(email, password);
+      login(email, password);
       navigate(from, { replace: true });
     } catch (e) {
       setLoading(false);

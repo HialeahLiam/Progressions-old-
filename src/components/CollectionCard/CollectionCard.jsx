@@ -1,26 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { PhpTwoTone } from '@mui/icons-material';
 import styles from './CollectionCard.module.css';
 import IconWithLabel from '../IconWithLabel/IconWithLabel';
 
 function CollectionCard({
-  // title, upvotes, downvotes, user,
-  collections, showProgressions,
+  collections,
+  handleCollectionSelect,
 }) {
   const [collectionStack, setCollections] = useState([[collections]]);
+  const [path, setPath] = useState([]);
+  const [deadEnd, setDeadEnd] = useState(false);
 
   function handleCollectionClick(collectionIndex) {
     const clickedCollection = collectionStack.at(-1)[collectionIndex];
+
     if (clickedCollection.entry_type === 'collection') {
       setCollections((stack) => [...stack, clickedCollection.entries]);
-    } else if (clickedCollection.entry_type === 'progression') {
-      showProgressions(clickedCollection.entries);
+      // setPath((prev) => [...prev, clickedCollection]);
+      setPath((prev) => [...prev, clickedCollection._id]);
+    } else if (!deadEnd) {
+      // setPath((prev) => [...prev, clickedCollection]);
+      setPath((prev) => [...prev, clickedCollection._id]);
+      setDeadEnd(true);
+    } else {
+      // setPath((prev) => [...prev.slice(0, -1), clickedCollection]);
+      setPath((prev) => [...prev.slice(0, -1), clickedCollection._id]);
     }
   }
 
   function handleBackClick() {
+    if (deadEnd) {
+      setPath((prev) => prev.slice(0, -2));
+    } else setPath((prev) => prev.slice(0, -1));
+
     setCollections((stack) => stack.slice(0, -1));
+    setDeadEnd(false);
   }
+
+  useEffect(() => {
+    handleCollectionSelect(path);
+  }, [path]);
 
   return (
     <div className={styles.container}>
@@ -46,9 +66,9 @@ function CollectionCard({
               <div className={styles.type}>Collection</div>
             </button>
             <div className={styles.dataRow}>
-              <IconWithLabel icon="thumbs-down" labelText={c.downvotes} />
-              <IconWithLabel icon="thumbs-up" labelText={c.upvotes} />
-              <IconWithLabel icon="upload-cloud" labelText={c.user} />
+              {c.downvotes && <IconWithLabel icon="thumbs-down" labelText={c.downvotes} />}
+              {c.upvotes && <IconWithLabel icon="thumbs-up" labelText={c.upvotes} />}
+              {c.user && <IconWithLabel icon="upload-cloud" labelText={c.user} />}
             </div>
           </div>
           <div className={styles.addButtons}>
@@ -75,10 +95,10 @@ function CollectionCard({
 CollectionCard.propTypes = {
   collections: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    upvotes: PropTypes.number.isRequired,
-    downvotes: PropTypes.number.isRequired,
-    user: PropTypes.string.isRequired,
+    upvotes: PropTypes.number,
+    downvotes: PropTypes.number,
+    user: PropTypes.string,
   }).isRequired,
-  showProgressions: PropTypes.func.isRequired,
+  // handleProgressionParentSelect: PropTypes.func.isRequired,
 };
 export default CollectionCard;

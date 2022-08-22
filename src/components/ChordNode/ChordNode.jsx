@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styles from './ChordNode.module.css';
+import { convertSemitonesToChordString } from '../../lib/progressions';
 
 export default function ChordNode({
-  chord, sendInput, position, radius,
+  chord, onClick, position, radius,
 }) {
   const handleInput = () => {
     // Send a copy of chord object so ProgressionBar can manipulate it without
     // affecting the chord object here
-    sendInput({ ...chord });
+    onClick();
   };
+
+  const chordString = useMemo(() => convertSemitonesToChordString(chord), [chord]);
 
   return (
     <div
@@ -25,21 +28,17 @@ export default function ChordNode({
         width: `${2 * radius}px`,
       }}
     >
-      {chord.root}
       <span className={styles.symbol}>
         {' '}
-        {chord.chordSymbol}
+        {chordString}
       </span>
     </div>
   );
 }
 
 ChordNode.propTypes = {
-  chord: PropTypes.shape({
-    root: PropTypes.string,
-    chordSymbol: PropTypes.string,
-  }).isRequired,
-  sendInput: PropTypes.func.isRequired,
+  chord: PropTypes.arrayOf(PropTypes.number).isRequired,
+  onClick: PropTypes.func.isRequired,
   position: PropTypes.shape({
     x: PropTypes.number,
     y: PropTypes.number,

@@ -1,0 +1,34 @@
+.container {
+    /* display: flex; */
+    /* padding: 20px 0; */
+    width: 50%;
+    user-select: none;
+}
+
+.soundwave {
+    width: 100%;
+    background-color: aqua;
+    height: 30px;
+    position: relative;
+    display: flex;
+}
+
+.needle {
+    position: absolute;
+    background-color: black;
+    width: 2px;
+    height: 50px;
+    top: -10px;
+}
+.dragging {
+    opacity: 1;
+}
+
+.clickRegion{
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    /* background: red; */
+    z-index: 1000;
+    cursor: pointer;
+}

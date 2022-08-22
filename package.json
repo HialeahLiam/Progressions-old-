@@ -3,14 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.9.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/user-event": "^13.5.0",
     "classnames": "^2.3.1",
     "express": "^4.17.3",
     "firebase": "^9.6.9",
+    "lodash": "^4.17.21",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-player": "^2.10.1",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4"
@@ -54,5 +60,6 @@
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     }
-  }
+  },
+  "proxy": "http://localhost:3001"
 }

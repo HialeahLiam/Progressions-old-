@@ -5,3 +5,7 @@
 .chord {
     padding: 0 5px;
 }
+
+.selected {
+    border-bottom: 1px solid black;
+}

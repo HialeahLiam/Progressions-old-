@@ -1,0 +1,32 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 10px 0 20px;
+}
+
+.mainSection {
+    display: flex;
+}
+
+.titleAndStats {
+    /* background-color: red; */
+    flex: 1
+ }
+
+.musicInfo {
+    margin-bottom: 40px;
+}
+
+.musicInfoRow {
+    /* display: flex; */
+    font-weight: 200;
+    font-size: 19px;
+
+}
+
+.title {
+    font-size: var(--thin-header-size);
+    font-weight: var(--thin-header-weight);
+    overflow-wrap: break-word;
+}

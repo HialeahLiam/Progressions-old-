@@ -1,130 +1,51 @@
-import React, { useContext, useState } from 'react';
+import React, {
+  useContext, useState, useEffect, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Typography } from '@mui/material';
 import CollectionCard from '../CollectionCard/CollectionCard';
 import LibrarySearch from '../LibrarySearch/LibrarySearch';
 import styles from './Libraries.module.css';
 import { AuthContext } from '../../contexts/AuthContext';
+import InputCard from '../InputCard/InputCard';
 
-const collections = [
-  {
-    _id: '62c6ea7432521f13af267445',
-    title: 'Smells Like Teen Spirit - Nirvana',
-    type: 'Collection',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-  },
-  {
-    _id: '62c6ea7432521f13af2674db',
-    title: 'Mac Demarco',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-    entry_type: 'collection',
-    entries: [
-      {
-        _id: '62c6ea7432521f13af2674de',
-        title: 'My Kind of Woman',
-        downvotes: 123,
-        upvotes: 321,
-        user: 'HialeahLiam',
-        parent_collection_id: '62c6ea7432521f13af2674db',
-        entry_type: 'progression',
-        entries: [
-          {
-            _id: '62c6ea7432521f13af2674e2',
-            title: 'My Kind of Woman - Verse',
-            downvotes: 123,
-            upvotes: 321,
-            user: 'HialeahLiam',
-            song: 'My Kind of Woman',
-            artist: 'Mac Demarco',
-            root: 9,
-            mode: 'major',
-            parent_collection_id: '62c6ea7432521f13af2674de',
-          },
-          {
-            _id: '62c6ea7432521f13af2674e3',
-            title: 'My Kind of Woman - Chorus',
-            downvotes: 123,
-            upvotes: 321,
-            user: 'HialeahLiam',
-            song: 'My Kind of Woman',
-            artist: 'Mac Demarco',
-            root: 9,
-            mode: 'major',
-            parent_collection_id: '62c6ea7432521f13af2674de',
-          },
-        ],
-      },
-      {
-        _id: '62c6ea7432521f13af2674df',
-        title: 'Freaking Out The Neighborhood',
-        downvotes: 123,
-        upvotes: 321,
-        user: 'HialeahLiam',
-        parent_collection_id: '62c6ea7432521f13af2674db',
-        entry_type: 'progression',
-        entries: [
-          {
-            _id: '62c6ea7432521f13af2674e4',
-            title: 'Freaking Out The Neighborhood - Intro',
-            downvotes: 123,
-            upvotes: 321,
-            user: 'HialeahLiam',
-            song: 'Freaking Out The Neighborhood',
-            artist: 'Mac Demarco',
-            root: 9,
-            mode: 'major',
-            parent_collection_id: '62c6ea7432521f13af2674df',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    _id: '62c6ea7432521f13af267446',
-    title: 'Radiohead',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-  },
-  {
-    _id: '62c6ea7432521f13af267448',
-    title: 'Radiohead',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-  },
-  {
-    _id: '62c6ea7432521f13af267449',
-    title: 'Radiohead',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-  },
-  {
-    _id: '62c6ea7432521f13af2',
-    title: 'Radiohead',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-  },
-  {
-    _id: '62c6ea7432521f13af267125',
-    title: 'Radiohead',
-    downvotes: 123,
-    upvotes: 321,
-    user: 'HialeahLiam',
-  },
-];
-
-function Libraries({ showProgressions }) {
-  const [library, setLibrary] = useState('public');
+function Libraries({
+  handleCollectionSelect,
+  onLibrarySelection,
+  onCollectionCreation,
+  collections,
+  loading = false,
+  library = 'public',
+}) {
   const { currentUser } = useContext(AuthContext);
+  const [searchText, setSearchText] = useState(null);
+  // const [collections, setCollections] = useState([]);
+  const [creatingCollection, createCollection] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // const Authorization = useMemo(() => `bearer ${currentUser?.token}`, [currentUser]);
+
+  const handleCollectionCreation = (title) => {
+    // fetch(`/api/v1/users/${currentUser.id}/collections`, {
+    //   method: 'post',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization,
+    //   },
+    //   body: JSON.stringify({ title }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((body) => setCollections((prev) => [...prev, body.collection]))
+    //   .catch((e) => {
+    //     console.log('Collection couldn\'t be added :()');
+    //     console.log(e);
+    //   });
+    onCollectionCreation(title);
+    createCollection(false);
+  };
 
   const handleTabClick = (lib, e) => {
     if (e.type === 'keydown' && e.key !== 'Enter') {
@@ -134,8 +55,50 @@ function Libraries({ showProgressions }) {
     if (lib === 'personal' && !currentUser) {
       navigate('/login', { state: { from: location } });
     }
-    setLibrary(lib);
+    // setCollections([]);
+    // setLibrary(lib);
+    onLibrarySelection(lib);
+    createCollection(false);
   };
+
+  // useEffect(() => {
+  //   const fetchPersonalCollections = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await fetch(`/api/v1/users/${currentUser.id}/collections`, {
+  //         headers: {
+  //           Authorization: `bearer ${currentUser.token}`,
+  //         },
+  //       });
+  //       setLoading(false);
+
+  //       response.json().then(({ collections }) => setCollections(collections));
+  //     } catch (error) {
+  //       console.log(`Couldn't retrieve ${currentUser.username}'s collections`);
+  //     }
+  //   };
+  //   const fetchPublicCollections = async () => {
+  //     try {
+  //       const response = await fetch('/api/v1/collections');
+
+  //       response.json().then(({ collections }) => setCollections(collections));
+  //     } catch (error) {
+  //       console.log(`Couldn't retrieve ${currentUser.username}'s collections`);
+  //     }
+  //   };
+
+  //   if (library === 'public') {
+  //     fetchPublicCollections();
+  //     createCollection(false);
+  //   } else if (library === 'personal' && currentUser) {
+  //     // fetch user's collections
+  //     fetchPersonalCollections();
+  //   }
+  // }, [library]);
+
+  // useEffect(() => {
+  //   if (!currentUser) setLibrary('public');
+  // }, [currentUser]);
 
   return (
     <div className={styles.container}>
@@ -162,20 +125,37 @@ function Libraries({ showProgressions }) {
 
         </button>
       </nav>
-      <div className={styles.collections}>
-        <div className={styles.scrollContainer}>
-          {collections.map((c) => (
-            // eslint-disable-next-line no-underscore-dangle
-            <CollectionCard showProgressions={showProgressions} key={c._id} collections={c} />
-          ))}
-        </div>
+      <div className={styles.scrollContainer}>
+        {collections.map((c) => (
+          // eslint-disable-next-line no-underscore-dangle
+          <CollectionCard
+            handleCollectionSelect={handleCollectionSelect}
+            key={c._id}
+            collections={c}
+          />
+        ))}
+
+        {loading && <Typography variant="h5">loading...</Typography>}
+
+        {creatingCollection && <InputCard onSubmit={handleCollectionCreation} />}
       </div>
+      {library === 'personal'
+        && (
+        <button
+          className={styles.createCollection}
+          onClick={() => createCollection(true)}
+        >
+          create collection
+
+        </button>
+        )}
     </div>
   );
 }
 
-Libraries.propTypes = {
-  showProgressions: PropTypes.func.isRequired,
-};
+// Libraries.propTypes = {
+//   // handleProgressionParentSelect: PropTypes.func.isRequired,
+//   handleLibrarySelection: PropTypes.func.isRequired,
+// };
 
 export default Libraries;

@@ -75,6 +75,8 @@ button {
 
   --thin-header-weight: 300;
   --thin-header-size: 30px;
+
+  --navbar-height: 70px;
 }
 
 h1 {

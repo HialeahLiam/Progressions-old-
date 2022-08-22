@@ -1,31 +1,110 @@
 import React, { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-// import {
-//   createUserWithEmailAndPassword, onAuthStateChanged,
-
-//   signInWithEmailAndPassword,
-// } from 'firebase/auth';
-// import { auth } from '../firebase';
+import {
+  createUserWithEmailAndPassword, onAuthStateChanged,
+  signOut as signOutFirebase,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from 'firebase/auth';
+import { auth } from '../firebase';
 
 export const AuthContext = createContext(1);
 
 function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  console.log(loading);
 
-  // const signUp = (email, password) => createUserWithEmailAndPassword(auth, email, password);
+  const signUp = (username, email, password) => {
+    console.log('Sign up!');
+    setLoading(true);
 
-  // const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        fetch('/api/v1/users/register', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            email: userCredentials.user.email,
+            id: userCredentials.user.uid,
+          }),
+        })
+          .then(() => updateProfile(auth.currentUser, {
+            displayName: username,
+          }))
+          .then((response) => response.json())
+          .then((body) => console.log(body));
+      })
+      .catch((error) => {
+        console.log('Unable to sign up!');
+        console.log(error);
+      });
+  };
+
+  const login = (email, password) => {
+    console.log('Login!');
+    setLoading(true);
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        // ...
+      })
+      .catch((error) => {
+        console.log('Unable to sign up!');
+        console.log(error);
+      });
+  };
+
+  const signOut = () => {
+    console.log('Sign out!');
+    signOutFirebase(auth)
+      .then(() => {
+        // Sign-out successful.
+      }).catch((error) => {
+        // An error happened.
+      });
+  };
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser');
+    console.log('AuthState change!');
 
-    if (!currentUser && loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setCurrentUser(user);
-    }
+    // firebase return an Unsubscribe function to remove observer callback,
+    // which we run when component unmounts
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const {
+          accessToken, displayName, email, uid,
+        } = user;
+        setCurrentUser({
+          token: accessToken,
+          username: displayName,
+          email,
+          id: uid,
+        });
+      } else {
+        // User is signed out
+        setCurrentUser(null);
+      }
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // ignore
+  useEffect(() => {
+    // const loggedUserJSON = window.localStorage.getItem('loggedUser');
+
+    // if (!currentUser && loggedUserJSON) {
+    //   const user = JSON.parse(loggedUserJSON);
+    //   setCurrentUser(user);
+    // }
   });
 
+  // ignore
   const updateUser = (body) => {
     console.log(body);
 
@@ -44,7 +123,8 @@ function AuthProvider({ children }) {
     setLoading(false);
   };
 
-  const signUp = async (username, email, password) => {
+  // ignore
+  const signUpX = async (username, email, password) => {
     setLoading(true);
     const body = JSON.stringify({ username, email, password });
     try {
@@ -64,7 +144,8 @@ function AuthProvider({ children }) {
     }
   };
 
-  const login = async (email, password) => {
+  // ignore
+  const loginX = async (email, password) => {
     const body = JSON.stringify({
       email, password,
     });
@@ -86,22 +167,11 @@ function AuthProvider({ children }) {
     }
   };
 
-  // useEffect(() => {
-  //   // firebase return an Unsubscribe function to remove observer callback,
-  //   // which we run when component unmounts
-  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
-  //     setCurrentUser(user);
-  //     setLoading(false);
-  //   });
-
-  //   return unsubscribe;
-  // }, []);
-
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const contextValue = {
     currentUser,
     signUp,
     login,
+    signOut,
   };
 
   return (

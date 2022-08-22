@@ -1,16 +1,18 @@
-.circle {
-    margin: 10vh auto;
+.container {
     display: flex;
+    align-items: center;
     justify-content: center;
+
 }
 
-.container {
-    margin: auto auto;
+.circle {
+    /* margin: auto auto; */
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
 }
 
 .modifier {

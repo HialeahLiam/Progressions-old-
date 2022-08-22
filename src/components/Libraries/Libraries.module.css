@@ -6,12 +6,13 @@
     flex-direction: column;
     align-items: center;
     padding-top: 2%;
-    /* background-color: red; */
+    height: calc(100vh - var(--navbar-height));
 }
 
 .libraryTabs {
     display: flex;
     width: 90%;
+    margin-bottom: 10px;
 }
 
 .tab {
@@ -30,14 +31,26 @@
     letter-spacing: 0;
 }
 
-.collections {
-    width: 100%;
-    padding: 20px 0 30px;
-    /* background-color: blueviolet; */
-}
 
 .scrollContainer {
-    height: 70vh;
+    height: 80%;
+    /* flex: 1; */
+    /* flex: 2; */
+
     /* background-color: aqua; */
     overflow-y: scroll;
+    /* margin-bottom: 20px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.createCollection {
+    /* flex: 1; */
+    border: 1px solid black;
+    height: 30px;
+    margin-top: auto;
+    margin-bottom: 20px;
+    
 }

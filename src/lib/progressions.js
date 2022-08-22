@@ -22,44 +22,53 @@ for (let octave = 0; octave < 9; octave++) {
   }
 }
 
+// const majorDiatonicTriads = [
+//   {
+//     root: 'I',
+//     chordSymbol: '',
+//     // first inner array represents root position, second is first inversion, etc.
+//     semitones: [0, 4, 7],
+//     inversion: 0,
+//   }, {
+//     root: 'ii',
+//     chordSymbol: '',
+//     semitones: [2, 5, 9],
+//     inversion: 0,
+//   }, {
+//     root: 'iii',
+//     chordSymbol: '',
+//     semitones: [4, 7, 11],
+//     inversion: 0,
+//   }, {
+//     root: 'IV',
+//     chordSymbol: '',
+//     semitones: [5, 9, 12],
+//     inversion: 0,
+//   }, {
+//     root: 'V',
+//     chordSymbol: '',
+//     semitones: [7, 11, 14],
+//     inversion: 0,
+//   }, {
+//     root: 'vi',
+//     chordSymbol: '',
+//     semitones: [9, 12, 16],
+//     inversion: 0,
+//   }, {
+//     root: 'vii',
+//     chordSymbol: `${SymbolStrings.dim}`,
+//     semitones: [11, 14, 17],
+//     inversion: 0,
+//   }];
 const majorDiatonicTriads = [
-  {
-    root: 'I',
-    chordSymbol: '',
-    // first inner array represents root position, second is first inversion, etc.
-    semitones: [0, 4, 7],
-    inversion: 0,
-  }, {
-    root: 'ii',
-    chordSymbol: '',
-    semitones: [2, 5, 9],
-    inversion: 0,
-  }, {
-    root: 'iii',
-    chordSymbol: '',
-    semitones: [4, 7, 11],
-    inversion: 0,
-  }, {
-    root: 'IV',
-    chordSymbol: '',
-    semitones: [5, 9, 12],
-    inversion: 0,
-  }, {
-    root: 'V',
-    chordSymbol: '',
-    semitones: [7, 11, 14],
-    inversion: 0,
-  }, {
-    root: 'vi',
-    chordSymbol: '',
-    semitones: [9, 12, 16],
-    inversion: 0,
-  }, {
-    root: 'vii',
-    chordSymbol: `${SymbolStrings.dim}`,
-    semitones: [11, 14, 17],
-    inversion: 0,
-  }];
+  [0, 4, 7],
+  [2, 5, 9],
+  [4, 7, 11],
+  [5, 9, 12],
+  [7, 11, 14],
+  [9, 12, 16],
+  [11, 14, 17],
+];
 
 const Scale = {
   MAJOR: 'major',
@@ -93,15 +102,17 @@ const setUpChordsData = () => {
 
 const chords = setUpChordsData();
 
-const getDiatonicChords = (scale) => chords[scale].diatonicTriads;
+// const getDiatonicChords = (scale) => chords[scale].diatonicTriads;
+
+const getDiatonicChordsInSemitones = (scale) => chords[scale].diatonicTriads;
 
 // returns string representing one of the seven diatonic triads from either major or minor scale
 // scale: 'major'|'minor'
-const randomDiatonicTriadGenerator = (scale) => {
-  const selection = Math.floor((Math.random() * 7));
-  const chord = getDiatonicChords(scale)[selection];
-  return chord;
-};
+// const randomDiatonicTriadGenerator = (scale) => {
+//   const selection = Math.floor((Math.random() * 7));
+//   const chord = getDiatonicChords(scale)[selection];
+//   return chord;
+// };
 
 // returns array of strings where each string is the result of calling the chord creater
 // callback provided
@@ -310,10 +321,10 @@ export {
   SymbolStrings,
   makeMinor,
   makeMajor,
-  getDiatonicChords,
   randomProgression,
-  randomDiatonicTriadGenerator,
   Scale,
   convertSemitonesToFrequencies,
   Chord,
+  convertSemitonesToChordString,
+  getDiatonicChordsInSemitones,
 };

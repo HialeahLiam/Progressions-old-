@@ -32,7 +32,8 @@ function SignUp(props) {
     try {
       setError('');
       setLoading(true);
-      await signUp(username, email, password);
+
+      signUp(username, email, password);
       navigate(from, { replace: true });
     } catch (e) {
       setLoading(false);
