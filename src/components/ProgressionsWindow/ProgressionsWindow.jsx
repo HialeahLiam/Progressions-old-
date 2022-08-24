@@ -55,6 +55,9 @@ function ProgressionsWindow({
     // TODO POST request for progression creation and pass response body to onEntryCreation
     const newProgression = { ...progression };
     newProgression.audio.url = audioUrl;
+    newProgression.parent_collection_id = lastCollection._id;
+    console.log('newProgression');
+    console.log(newProgression);
     onEntryCreation(newProgression);
     // ----------------
     setAddProgression(false);
