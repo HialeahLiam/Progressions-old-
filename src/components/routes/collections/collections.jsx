@@ -3,11 +3,12 @@ import React, {
   useState, useCallback, useContext, useMemo, useEffect,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
-import { getCollectionFromCollectionTree } from '../../utils/dataMethods';
-import Libraries from '../Libraries/Libraries';
-import ProgressionsWindow from '../ProgressionsWindow/ProgressionsWindow';
+import { AuthContext } from '../../../contexts/AuthContext';
+import { getCollectionFromCollectionTree } from '../../../utils/dataMethods';
+import Libraries from '../../Libraries/Libraries';
+import ProgressionsWindow from '../../ProgressionsWindow/ProgressionsWindow';
 import './collections.css';
+import { createCopyOfCollectionsAndAppendNewEntry } from './collections.utils';
 
 function Collections() {
   const [library, setLibrary] = useState('public');
@@ -37,52 +38,31 @@ function Collections() {
 
   async function handleEntryCreation(entry) {
     try {
-    // entry is a progression
-      const collectionsCopy = cloneDeep(collections);
-
+      let entry_type = '';
       if (entry.chords) {
-        console.log('recognize as progression');
-        // the array is an array of references. New entry will be remembered.
-        let current = collectionsCopy.find((c) => c._id === selectedCollections[0]._id);
-        for (let i = 1; i < selectedCollections.length; i++) {
-          current = current.entries.find((e) => selectedCollections[i]._id === e._id);
-        }
-        current.entry_type = 'progression';
-        console.log('current');
-        console.log(current);
-        current.entries.push(entry);
+        entry_type = 'progression';
       } else {
         console.log('recognized as collection');
+        entry_type = 'collection';
+      }
+      // make POST request to server
+      const { parent_collection_id } = entry;
+      const responseBody = await (await fetch(`/api/v1/collections/${parent_collection_id}`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization,
+        },
+        body: JSON.stringify({ entry, type: entry_type }),
+      })).json();
 
-        // make POST request to server
-        const { title, parent_collection_id } = entry;
-        const responseBody = await (await fetch(`/api/v1/collections/${parent_collection_id}`, {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization,
-          },
-          body: JSON.stringify({ entry: { title }, type: 'collection' }),
-        })).json();
-
-        // update collections data structure
-        let parentCollection = null;
-        for (const c of collectionsCopy) {
-          parentCollection = getCollectionFromCollectionTree(c, entry.parent_collection_id);
-          if (parentCollection) {
-            // backend updates entry type, but we must update it for stale data.
-            // backend checks if it already has a 'progression' type. We do not here.
-            parentCollection.entry_type = 'collection';
-            parentCollection.entries.push(responseBody.collection);
-
-            // This id is only added to the updated collection clone. It is passed on to CollectionCard
-            // so that it displays the updated collection entries
-            c.focusedCollectionId = parent_collection_id;
-            break;
-          }
-        }
-
-        setCollections(collectionsCopy);
+      if (responseBody.error) {
+        console.log(responseBody.error);
+      } else {
+        // update collections state instead of refretching.
+        // Function deep copies collections to not modify state directly. Appends new entry to copy and returns it.
+        const updatedCollections = createCopyOfCollectionsAndAppendNewEntry(collections, parent_collection_id, entry_type, responseBody.entry);
+        setCollections(updatedCollections);
       }
     } catch (e) {
       alert(e);
@@ -111,7 +91,6 @@ function Collections() {
     setProgressions([]);
     const pathCollections = [];
     let current = collections;
-    console.log(idPath);
     for (const cid of idPath) {
       current = current.find((c) => c._id === cid);
       if (current.entry_type === 'progression') setProgressions(current.entries);
@@ -123,7 +102,6 @@ function Collections() {
       current = current.entries;
     }
 
-    console.log(pathCollections);
     setSelectedCollections(pathCollections);
   }, [collections, idPath]);
 

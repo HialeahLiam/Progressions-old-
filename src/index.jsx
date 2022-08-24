@@ -4,7 +4,7 @@ import './index.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import App from './App';
-import Collections from './components/routes/collections';
+import Collections from './components/routes/collections/collections';
 import Training from './components/routes/training';
 // import Synthesizer from './components/routes/synthesizer';
 import SignUp from './components/routes/SignUp';
