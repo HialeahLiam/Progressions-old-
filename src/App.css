@@ -20,27 +20,6 @@
   margin: 0;
 }
 
-.logo {
-    letter-spacing: var(--main-letter-spacing);
-  
-    height: var(--navbar-height);
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid;
-}
-
-.main {
-  width: inherit;
-  display: flex;
-  flex-direction: column;
-}
-
-.content {
-  flex: 1;
-}
-
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

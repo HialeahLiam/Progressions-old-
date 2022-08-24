@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
+import { getCollectionFromCollectionTree } from '../../utils/dataMethods';
 import Libraries from '../Libraries/Libraries';
 import ProgressionsWindow from '../ProgressionsWindow/ProgressionsWindow';
 import './collections.css';
@@ -14,6 +15,7 @@ function Collections() {
   const [idPath, setIdPath] = useState([]);
   const [loading, setLoading] = useState(false);
   const [collections, setCollections] = useState([]);
+  const [progressions, setProgressions] = useState([]);
   // const navigate = useNavigate();
   // const location = useLocation();
   const { currentUser } = useContext(AuthContext);
@@ -21,34 +23,74 @@ function Collections() {
   const Authorization = useMemo(() => `bearer ${currentUser?.token}`, [currentUser]);
 
   const handleLibrarySelection = useCallback((lib) => {
-    setCollections([]);
-    setLibrary(lib);
-    setIdPath([]);
+    if (lib !== library) {
+      setCollections([]);
+      setLibrary(lib);
+      setIdPath([]);
+    }
   });
 
   function handleCollectionSelect(path) {
+    console.log('handleCollectionselected');
     if (!loading) setIdPath(path);
   }
 
-  function handleEntryCreation(entry) {
-    console.log('entry');
-    console.log(entry);
+  async function handleEntryCreation(entry) {
+    try {
     // entry is a progression
-    if (entry.chords) {
-      // the array is an array of references. New entry will be remembered.
       const collectionsCopy = cloneDeep(collections);
-      let current = collectionsCopy.find((c) => c._id === selectedCollections[0]._id);
-      // eslint-disable-next-line no-restricted-syntax
-      for (let i = 1; i < selectedCollections.length; i++) {
-        current = current.entries.find((e) => selectedCollections[i]._id === e._id);
+
+      if (entry.chords) {
+        console.log('recognize as progression');
+        // the array is an array of references. New entry will be remembered.
+        let current = collectionsCopy.find((c) => c._id === selectedCollections[0]._id);
+        for (let i = 1; i < selectedCollections.length; i++) {
+          current = current.entries.find((e) => selectedCollections[i]._id === e._id);
+        }
+        current.entry_type = 'progression';
+        console.log('current');
+        console.log(current);
+        current.entries.push(entry);
+      } else {
+        console.log('recognized as collection');
+
+        // make POST request to server
+        const { title, parent_collection_id } = entry;
+        const responseBody = await (await fetch(`/api/v1/collections/${parent_collection_id}`, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization,
+          },
+          body: JSON.stringify({ entry: { title }, type: 'collection' }),
+        })).json();
+
+        // update collections data structure
+        let parentCollection = null;
+        for (const c of collectionsCopy) {
+          parentCollection = getCollectionFromCollectionTree(c, entry.parent_collection_id);
+          if (parentCollection) {
+            // backend updates entry type, but we must update it for stale data.
+            // backend checks if it already has a 'progression' type. We do not here.
+            parentCollection.entry_type = 'collection';
+            parentCollection.entries.push(responseBody.collection);
+
+            // This id is only added to the updated collection clone. It is passed on to CollectionCard
+            // so that it displays the updated collection entries
+            c.focusedCollectionId = parent_collection_id;
+            break;
+          }
+        }
+
+        setCollections(collectionsCopy);
       }
-      current.entry_type = 'progression';
-      current.entries.push(entry);
-      setCollections(collectionsCopy);
+    } catch (e) {
+      alert(e);
+      console.log(e);
     }
   }
 
-  function handleCollectionCreation(title) {
+  function handleTopLevelCollectionCreation(title) {
     fetch(`/api/v1/users/${currentUser.id}/collections`, {
       method: 'post',
       headers: {
@@ -66,18 +108,21 @@ function Collections() {
   }
 
   useEffect(() => {
+    setProgressions([]);
     const pathCollections = [];
+    let current = collections;
     console.log(idPath);
-    console.log(collections);
-    if (idPath.length > 0) {
-      let current = collections.find((c) => c._id === idPath[0]);
-      if (current) pathCollections.push(current);
-      // eslint-disable-next-line no-restricted-syntax
-      for (let i = 1; i < idPath.length; i++) {
-        current = current.entries.find((e) => idPath[i] === e._id);
-        pathCollections.push(current);
-      }
+    for (const cid of idPath) {
+      current = current.find((c) => c._id === cid);
+      if (current.entry_type === 'progression') setProgressions(current.entries);
+      pathCollections.push({
+        _id: current._id,
+        title: current.title,
+        entry_type: current.entry_type,
+      });
+      current = current.entries;
     }
+
     console.log(pathCollections);
     setSelectedCollections(pathCollections);
   }, [collections, idPath]);
@@ -116,6 +161,9 @@ function Collections() {
       // fetch user's collections
       fetchPersonalCollections();
     }
+
+    setProgressions([]);
+    setSelectedCollections([]);
   }, [library]);
 
   useEffect(() => {
@@ -127,12 +175,13 @@ function Collections() {
       <Libraries
         handleCollectionSelect={handleCollectionSelect}
         onLibrarySelection={handleLibrarySelection}
-        onCollectionCreation={handleCollectionCreation}
+        onCollectionCreation={handleTopLevelCollectionCreation}
         collections={collections}
         loading={loading}
         library={library}
       />
       <ProgressionsWindow
+        progressions={progressions}
         libraryScope={library}
         selectedCollections={selectedCollections}
         onEntryCreation={handleEntryCreation}
