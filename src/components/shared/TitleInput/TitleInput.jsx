@@ -1,8 +1,8 @@
-import { IconButton, TextField } from '@mui/material';
+import { Box, IconButton, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import Add from '@mui/icons-material/Add';
 
-function InputCard({ onSubmit }) {
+function TitleInput({ onSubmit }) {
   const [title, setTitle] = useState('');
 
   const handleInputSubmit = () => {
@@ -17,7 +17,11 @@ function InputCard({ onSubmit }) {
 
   return (
 
-    <div>
+    <Box sx={{
+      display: 'flex',
+      justifyContent: 'center',
+    }}
+    >
       <TextField
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -32,9 +36,9 @@ function InputCard({ onSubmit }) {
       >
         <Add />
       </IconButton>
-    </div>
+    </Box>
 
   );
 }
 
-export default InputCard;
+export default TitleInput;

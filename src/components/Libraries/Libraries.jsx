@@ -4,11 +4,11 @@ import React, {
 import PropTypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
-import CollectionCard from '../CollectionCard/CollectionCard';
+import CollectionCard from '../shared/CollectionCard/CollectionCard';
 import LibrarySearch from '../LibrarySearch/LibrarySearch';
 import styles from './Libraries.module.css';
 import { AuthContext } from '../../contexts/AuthContext';
-import InputCard from '../InputCard/InputCard';
+import TitleInput from '../shared/TitleInput/TitleInput';
 
 function Libraries({
   handleCollectionSelect,
@@ -129,15 +129,16 @@ function Libraries({
         {collections.map((c) => (
           // eslint-disable-next-line no-underscore-dangle
           <CollectionCard
-            handleCollectionSelect={handleCollectionSelect}
+            onClick={handleCollectionSelect}
             key={c._id}
-            collections={c}
+            rootCollection={c}
+            initialCollectionId={c.focusedCollectionId}
           />
         ))}
 
         {loading && <Typography variant="h5">loading...</Typography>}
 
-        {creatingCollection && <InputCard onSubmit={handleCollectionCreation} />}
+        {creatingCollection && <TitleInput onSubmit={handleCollectionCreation} />}
       </div>
       {library === 'personal'
         && (

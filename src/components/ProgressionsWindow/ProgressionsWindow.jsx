@@ -11,6 +11,7 @@ import ReactPlayer from 'react-player/youtube';
 import ProgressionView from '../ProgressionView/ProgressionView';
 import styles from './ProgressionsWindow.module.css';
 import EditProgressionView from '../EditProgressionView/EditProgressionView';
+import TitleInput from '../shared/TitleInput/TitleInput';
 
 const propTypes = {
   libraryScope: PropTypes.oneOf(['public', 'personal']).isRequired,
@@ -26,21 +27,23 @@ const defaultProps = {
   selectedCollections: [],
 };
 
-function ProgressionsWindow({ libraryScope, selectedCollections, onEntryCreation }) {
+function ProgressionsWindow({
+  progressions, libraryScope, selectedCollections, onEntryCreation,
+}) {
   const playbackTimer = useRef(null);
   const [playing, setPlaying] = useState(false);
   const player = useRef(null);
   const [addingProgression, setAddProgression] = useState(false);
+  const [addingCollection, setAddCollection] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const [urlInput, setUrlInput] = useState('');
   const [audioDuration, setAudioDuration] = useState(null);
-  console.log(selectedCollections);
 
   const lastCollection = useMemo(() => selectedCollections.at(-1), [selectedCollections]);
 
-  const progressions = useMemo(() => (lastCollection?.entry_type === 'progression'
-    ? lastCollection.entries
-    : []), [selectedCollections]);
+  // const progressions = useMemo(() => (lastCollection?.entry_type === 'progression'
+  //   ? lastCollection.entries
+  //   : []), [selectedCollections]);
 
   function progressionsHaveSameAudioUrl(progs) {
     const firstUrl = progs[0].audio.url;
@@ -48,10 +51,34 @@ function ProgressionsWindow({ libraryScope, selectedCollections, onEntryCreation
     return progs.length === filter.length;
   }
 
-  useEffect(() => {
-    const url = (progressions.length > 0 && progressionsHaveSameAudioUrl(progressions)) ? progressions[0].audio.url : null;
-    setAudioUrl(url);
-  }, [progressions]);
+  function handleProgressionCreation(progression) {
+    // TODO POST request for progression creation and pass response body to onEntryCreation
+    const newProgression = { ...progression };
+    newProgression.audio.url = audioUrl;
+    onEntryCreation(newProgression);
+    // ----------------
+    setAddProgression(false);
+  }
+  function handleCollectionCreation(title) {
+    const parent_collection_id = lastCollection._id;
+    onEntryCreation({ title, parent_collection_id });
+    setAddCollection(false);
+  }
+
+  function handleAddProgression() {
+    setAddCollection(false);
+    setAddProgression(true);
+  }
+
+  function handleAddCollection() {
+    setAddProgression(false);
+    setAddCollection(true);
+  }
+
+  function handleUrlInput(event) {
+    if (event.type === 'keypress' && event.key !== 'Enter') return;
+    setAudioUrl(urlInput);
+  }
 
   function startPlaybackFromAndTo(start, end) {
     clearTimeout(playbackTimer.current);
@@ -63,24 +90,15 @@ function ProgressionsWindow({ libraryScope, selectedCollections, onEntryCreation
       setPlaying(false);
     }, (end - start) * 1000);
   }
+  useEffect(() => {
+    const url = (progressions.length > 0 && progressionsHaveSameAudioUrl(progressions)) ? progressions[0].audio.url : null;
+    setAudioUrl(url);
+  }, [progressions]);
 
-  function handleAddProgression() {
-    setAddProgression(true);
-  }
-
-  function handleUrlInput(event) {
-    if (event.type === 'keypress' && event.key !== 'Enter') return;
-    setAudioUrl(urlInput);
-  }
-
-  function handleProgressionCreation(progression) {
-    // TODO POST request for progression creation and pass response body to onEntryCreation
-    const newProgression = { ...progression };
-    newProgression.audio.url = audioUrl;
-    onEntryCreation(progression);
-    // ----------------
+  useEffect(() => {
+    setAddCollection(false);
     setAddProgression(false);
-  }
+  }, [libraryScope]);
 
   return (
     <div className={styles.container}>
@@ -143,15 +161,16 @@ function ProgressionsWindow({ libraryScope, selectedCollections, onEntryCreation
         />
         )}
         {libraryScope === 'personal' && lastCollection?.entry_type !== 'collection' && selectedCollections.length > 0
-        && (
-        <Button
-          onClick={handleAddProgression}
-        >
-          Add Progression
-        </Button>
+        && !addingProgression && (
+          <Button
+            onClick={handleAddProgression}
+          >
+            Add Progression
+          </Button>
         )}
+        {addingCollection && <TitleInput onSubmit={handleCollectionCreation} />}
         {libraryScope === 'personal' && lastCollection?.entry_type !== 'progression' && selectedCollections.length > 0
-        && <Button>Add Collection</Button>}
+        && !addingCollection && <Button onClick={handleAddCollection}>Add Collection</Button>}
       </Stack>
     </div>
   );
