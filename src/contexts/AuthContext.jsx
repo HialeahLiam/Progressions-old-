@@ -38,9 +38,7 @@ function AuthProvider({ children }) {
         })
           .then(() => updateProfile(auth.currentUser, {
             displayName: username,
-          }))
-          .then((response) => response.json())
-          .then((body) => console.log(body));
+          }));
       })
       .catch((error) => {
         setLoading(false);
@@ -63,7 +61,6 @@ function AuthProvider({ children }) {
   };
 
   const signOut = () => {
-    console.log('Sign out!');
     signOutFirebase(auth)
       .then(() => {
         // Sign-out successful.
@@ -74,7 +71,6 @@ function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    console.log('AuthState change!');
     setError('');
 
     // firebase return an Unsubscribe function to remove observer callback,

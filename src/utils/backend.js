@@ -2,7 +2,7 @@ const getBaseUrl = () => {
   let url;
   switch (process.env.NODE_ENV) {
     case 'production':
-      url = 'http://184.72.155.177:3001';
+      url = 'https://184.72.155.177';
       break;
     case 'development':
     default:

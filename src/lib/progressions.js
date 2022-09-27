@@ -327,11 +327,8 @@ function convertSemitonesToChordString(semitones) {
       chordString.modifier += 'b5';
     }
   } else if (n === 5) { // ninth chord
-    console.log('nothing');
   } else if (n === 6) { // 11th chord
-    console.log('nothing');
   } else if (n === 7) { // 13th chord
-    console.log('nothing');
   }
 
   return chordString;

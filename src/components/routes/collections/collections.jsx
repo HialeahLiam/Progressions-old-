@@ -23,7 +23,6 @@ function Collections() {
     collections, library, setCollections, setLibrary, setSearchText, loading,
   } = useCollectionsSearch('public');
 
-  console.log(collections);
 
   const Authorization = useMemo(() => `bearer ${currentUser?.token}`, [currentUser]);
 

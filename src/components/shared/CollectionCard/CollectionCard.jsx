@@ -150,7 +150,7 @@ CollectionCard.propTypes = {
 };
 
 CollectionCard.defaultProps = {
-  onClick: (path) => console.log(path),
+  onClick: null,
   initialCollectionId: '',
 };
 export default CollectionCard;
