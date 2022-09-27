@@ -75,6 +75,19 @@ const Scale = {
   MINOR: 'minor',
 };
 
+const convertSecondsToMinutesAndSeconds = (time) => {
+  const result = {
+    min: '0',
+    sec: '00',
+  };
+  result.min = `${Math.floor(time / 60)}`;
+  result.sec = `${Math.floor(time % 60)}`;
+  if (+result.sec < 10) {
+    result.sec = `0${result.sec}`;
+  }
+  return result;
+};
+
 const recursivelyFreeze = (obj) => {
   Object.freeze(obj);
 
@@ -243,6 +256,21 @@ const ROOTS = {
   11: 'VII',
 };
 
+const KEYS = {
+  0: 'C',
+  1: `${SymbolStrings.flat}D`,
+  2: 'D',
+  3: `${SymbolStrings.flat}E`,
+  4: 'E',
+  5: 'F',
+  6: `${SymbolStrings.flat}G`,
+  7: 'G',
+  8: `${SymbolStrings.flat}A`,
+  9: 'A',
+  10: `${SymbolStrings.flat}B`,
+  11: 'B',
+};
+
 const Intervals = {
   MINOR_THIRD: 3,
   MAJOR_THIRD: 4,
@@ -260,39 +288,43 @@ function convertSemitonesToChordString(semitones) {
   const root = semitones[0];
   const third = semitones[1];
 
-  let chordString = ROOTS[root];
+  const chordString = {};
+  chordString.root = ROOTS[root];
+  chordString.modifier = '';
 
   if (third - root === Intervals.MINOR_THIRD) {
-    chordString = chordString.toLowerCase();
+    chordString.root = chordString.root.toLowerCase();
   }
 
-  if (n === 3) { // triad
+  if (n === 3) {
+    // triad
     const fifth = semitones[2];
-    if (fifth - root === Intervals.DIM_FIFTH) chordString += SymbolStrings.dim;
-    else if (fifth - root === Intervals.AUG_FIFTH) chordString += SymbolStrings.aug;
-  } else if (n === 4) { // seventh chord
+    if (fifth - root === Intervals.DIM_FIFTH) chordString.modifier = SymbolStrings.dim;
+    else if (fifth - root === Intervals.AUG_FIFTH) chordString.modifier = SymbolStrings.aug;
+  } else if (n === 4) {
+    // seventh chord
     const fifth = semitones[2];
     const seventh = semitones[3];
     // perfect fifth
     if (fifth - root === Intervals.AUG_FIFTH) {
-      chordString += 'aug';
+      chordString.modifier = 'aug';
     }
     switch (seventh - root) {
       case Intervals.MAJOR_SEVENTH:
-        chordString += 'M7';
+        chordString.modifier += 'M7';
         break;
       case Intervals.MINOR_SEVENTH:
-        chordString += '7';
+        chordString.modifier += '7';
         break;
 
       case Intervals.DIM_SEVENTH:
-        chordString += 'dim7';
+        chordString.modifier += `${SymbolStrings.dim}7`;
         break;
       default:
     }
 
     if (fifth - root === Intervals.DIM_FIFTH && seventh - root !== Intervals.DIM_SEVENTH) {
-      chordString += 'b5';
+      chordString.modifier += 'b5';
     }
   } else if (n === 5) { // ninth chord
     console.log('nothing');
@@ -327,4 +359,6 @@ export {
   Chord,
   convertSemitonesToChordString,
   getDiatonicChordsInSemitones,
+  convertSecondsToMinutesAndSeconds,
+  KEYS,
 };

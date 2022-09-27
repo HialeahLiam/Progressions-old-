@@ -1,25 +1,21 @@
+import { useMediaQuery } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import TemporaryDrawer from '../../shared/MenuDrawer';
 import SideBar from '../../SideBar/SideBar';
 import styles from './MainLayout.module.css';
 
 function MainLayout({ children }) {
-  const [breakpoint, setBreakpoint] = useState();
+  const smallWidth = useMediaQuery('(max-width:900px');
 
-  useEffect(() => {
-    const mediumMql = window.matchMedia('(min-width: 900px)');
-    if (mediumMql.matches) setBreakpoint('md');
-    else setBreakpoint('sm');
-    mediumMql.onchange = (e) => {
-      if (e.matches) setBreakpoint('md');
-      else setBreakpoint('sm');
-    };
-  }, []);
   return (
     <>
-      {breakpoint !== 'sm' && <SideBar />}
+      {/* {!smallWidth && <SideBar />} */}
       <div className={styles.main}>
-        <div className={styles.logo}>
-          <h1>Progressions</h1>
+        <div className={styles.header}>
+          <div className={styles.logo}>
+            <h1>Progressions</h1>
+          </div>
+          <TemporaryDrawer />
         </div>
 
         <div className={styles.content}>

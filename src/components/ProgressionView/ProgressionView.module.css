@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 10px 0 20px;
+    padding: 20px 50px 20px;
 }
 
 .mainSection {
@@ -11,7 +11,7 @@
 
 .titleAndStats {
     /* background-color: red; */
-    flex: 1
+    /* flex: 1  */
  }
 
 .votes {
@@ -39,7 +39,7 @@
 }
 
 .middle {
-    flex: 3;
+    /* flex: 3; */
     display: flex;
     flex-direction: column;
     align-items: center;

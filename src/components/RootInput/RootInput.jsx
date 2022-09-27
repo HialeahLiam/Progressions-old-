@@ -24,21 +24,23 @@ const defaultProps = {
 export default function RootInput({ scale, handleRootSelect, radius }) {
   const [intervals, setIntervals] = useState([]);
 
-  const chords = useRef();
+  // const chords = useRef();
+
+  const [chords, setChords] = useState([]);
 
   function handleChordNodeClick(index) {
-    handleRootSelect(chords.current[index].chord);
+    handleRootSelect(chords[index].chord);
   }
 
   useEffect(() => {
     // returns chords in semitones
     const chordsOfScale = getDiatonicChordsInSemitones(Scale.MAJOR);
-    chords.current = chordsOfScale.map((chord, i) => {
+    setChords(chordsOfScale.map((chord, i) => {
       const angle = 2 * Math.PI * (i / chordsOfScale.length);
       const x = radius * Math.sin(angle) + radius - RADIUS_OF_NODES;
       const y = radius - radius * Math.cos(angle);
       return { chord, x, y };
-    });
+    }));
   }, [radius, scale]);
 
   return (
@@ -52,7 +54,7 @@ export default function RootInput({ scale, handleRootSelect, radius }) {
           marginRight: RADIUS_OF_NODES,
         }}
       >
-        {chords.current && chords.current.map((obj, i) => (
+        {chords.map((obj, i) => (
           <ChordNode
             key={obj.chord[0]}
             chord={obj.chord}

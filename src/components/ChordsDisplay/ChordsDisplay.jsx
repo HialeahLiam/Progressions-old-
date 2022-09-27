@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import { Add } from '@mui/icons-material';
+import ClearIcon from '@mui/icons-material/Clear';
+import CircleIcon from '@mui/icons-material/Circle';
 import styles from './ChordsDisplay.module.css';
 import { convertSemitonesToChordString } from '../../lib/progressions';
 
@@ -33,20 +35,28 @@ function ChordsDisplay({
   return (
     <div className={styles.container}>
 
-      {progression.map((c, i) => (
-        <React.Fragment key={i}>
-          {i > 0 && <div className={styles.chord}>*</div>}
-          <button
-            type="button"
-            className={`${styles.chord} ${i === selected && styles.selected}`}
-            onClick={() => handleChordSelect(i)}
-          >
-            {convertSemitonesToChordString(c)}
+      {progression.map((c, i) => {
+        const chordString = convertSemitonesToChordString(c);
+        return (
+          <React.Fragment key={i}>
+            {i > 0 && <CircleIcon sx={{ px: 0.3, mx: 2 }} fontSize="sm" />}
+            <button
+              type="button"
+              className={`${styles.chord} ${i === selected && styles.selected}`}
+              onClick={() => handleChordSelect(i)}
+            >
+              <span className={styles.root}>{chordString.root}</span>
+              <span className={styles.modifier}>{chordString.modifier}</span>
 
-          </button>
-          {edit && (<button onClick={() => handleChordDelete(i)}>x</button>)}
-        </React.Fragment>
-      ))}
+            </button>
+            {edit && (
+            <button className={styles.clear} aria-label="Clear chord" onClick={() => handleChordDelete(i)}>
+              <ClearIcon color="error" fontSize="sm" />
+            </button>
+            )}
+          </React.Fragment>
+        );
+      })}
       {edit && (
       <IconButton
         size="small"

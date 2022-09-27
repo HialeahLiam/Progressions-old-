@@ -1,9 +1,11 @@
 import {
   Alert,
-  Box, Button, Container, MenuItem, TextField, Typography,
+  Box, Button, ButtonGroup, Container, Grid, MenuItem, TextField, Typography,
 } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { purple } from '@mui/material/colors';
+import { startsWith } from 'lodash';
 import ChordsDisplay from '../ChordsDisplay/ChordsDisplay';
 import Soundwave from '../Soundwave/Soundwave';
 import styles from './EditProgressionView.module.css';
@@ -75,7 +77,7 @@ const propTypes = {
   progression: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   startTimes: PropTypes.arrayOf(PropTypes.number),
   endTime: PropTypes.number.isRequired,
-  onProgressionAdd: PropTypes.func,
+  onProgressionSubmit: PropTypes.func,
 };
 
 const defaultProps = {
@@ -84,11 +86,11 @@ const defaultProps = {
   mode: Scale.MAJOR,
   progression: [[]],
   startTimes: [0],
-  onProgressionAdd: null,
+  onProgressionSubmit: null,
 };
 
 function EditProgressionView({
-  title, root, mode, progression, endTime, startTimes, onProgressionAdd, audioDuration,
+  title, root, mode, progression, endTime, startTimes, onProgressionSubmit, onCancel, audioDuration, startPlaybackFromAndTo,
 }) {
   const [titleVal, setTitle] = useState(title);
   const [rootVal, setRoot] = useState(root);
@@ -97,7 +99,6 @@ function EditProgressionView({
   const [chords, setChords] = useState(progression);
   const [invalidInput, setInvalidInput] = useState(false);
   const [audioEnd, setAudioEnd] = useState(endTime);
-  // const [audioRange, setAudioRange] = useState([]);
 
   const [selectedChordIdx, setSelectedChordIdx] = useState(0);
 
@@ -129,8 +130,30 @@ function EditProgressionView({
   }
 
   function handleRangeChange(range) {
-    console.log(range);
-    setStartTimes((prev) => [range[0], ...prev.slice(1)]);
+    const newStartTimes = [range[0], ...chordStartTimes.slice(1)];
+
+    let prev = range[0];
+
+    for (let i = 1; i < newStartTimes.length; i++) {
+      if (newStartTimes[i] < prev + 1) {
+        newStartTimes[i] = prev + 1;
+      }
+      prev = newStartTimes[i];
+    }
+
+    startPlaybackFromAndTo(range[0], audioEnd);
+
+    // eslint-disable-next-line prefer-destructuring
+    prev = range[1];
+
+    for (let i = newStartTimes.length - 1; i >= 0; i--) {
+      if (newStartTimes[i] > prev - 0.1) {
+        newStartTimes[i] = prev - 0.1;
+      }
+      prev = newStartTimes[i];
+    }
+
+    setStartTimes(newStartTimes);
     setAudioEnd(range[1]);
   }
 
@@ -139,7 +162,7 @@ function EditProgressionView({
     if (titleVal.length === 0 || chords.length === 0) {
       setInvalidInput(true);
     } else {
-      onProgressionAdd({
+      onProgressionSubmit({
         title: titleVal,
         root: rootVal,
         mode: modeVal,
@@ -161,87 +184,114 @@ function EditProgressionView({
   // useEffect(() => { setAudioRange([startTimes[0], endTime]); }, [startTimes, endTime]);
 
   return (
-    <Container>
-      <Soundwave
-        endTime={audioEnd}
-        chordStartTimes={chordStartTimes}
-        updateChordTimes={(startTimes) => setStartTimes(startTimes)}
-        updateAudioRange={handleRangeChange}
-        audioDuration={audioDuration}
-      />
-      <Box
-        // bgcolor="red"
-        sx={{
-          display: 'flex',
-        }}
-      >
-        <TextField
-          sx={{ flex: 1 }}
-          variant="standard"
-          value={titleVal}
-          placeholder="title"
-          multiline
-          onChange={(e) => setTitle(e.target.value)}
-          // eslint-disable-next-line react/jsx-props-no-spreading, no-undef
-          {...(invalidInput && titleVal.length === 0 && { error: true, helperText: 'Include a title' })}
-        />
-        <Container
-          sx={{
-            flex: 2,
-          }}
-        >
-
-          <div className={styles.musicInfoRow}>
-            <span className={styles.musicLeft}>Root:</span>
-            <TextField
-              value={rootVal}
-              onChange={(e) => setRoot(e.target.value)}
-              select
-              variant="standard"
-            >
-              {rootValues.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-          <div className={styles.musicInfoRow}>
-            <span className={styles.musicLeft}>Mode:</span>
-            <TextField
-              value={modeVal}
-              onChange={(e) => setMode(e.target.value)}
-              select
-              variant="standard"
-            >
-              <MenuItem value="major">major</MenuItem>
-              <MenuItem value="minor">minor</MenuItem>
-            </TextField>
-          </div>
-        </Container>
-      </Box>
-
-      <ChordsDisplay
-        edit
-        progression={chords}
-        selected={selectedChordIdx}
-        handleChordSelect={(chordIdx) => setSelectedChordIdx(chordIdx)}
-        handleChordDelete={handleChordDelete}
-        handleChordAdd={handleChordAdd}
-      />
-      {/* <Typography variant> Progression must contain at least one chord.</Typography> */}
-      {invalidInput && chords.filter((c) => c.length > 0).length === 0 && <Alert severity="error">Progression cannot contain empty chords.</Alert>}
+    <Container sx={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+    }}
+    >
       <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
+        width: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 5,
       }}
       >
-        <RootInput scale={Scale.MAJOR} handleRootSelect={replaceSelectedChord} />
-        <IntervalSelect chord={selectedChord} handleChordModification={replaceSelectedChord} />
+
+        <Soundwave
+          endTime={audioEnd}
+          chordStartTimes={chordStartTimes}
+          updateAudioRange={handleRangeChange}
+          updateChordTimes={(startTimes) => setStartTimes(startTimes)}
+          audioDuration={audioDuration}
+          startPlaybackFromAndTo={startPlaybackFromAndTo}
+        />
       </Box>
-      <Button variant="contained" onClick={handleSubmit}>
-        Submit
-      </Button>
+      <Box sx={{ width: 1, mb: 5 }}>
+        <Grid
+          container
+        >
+          <Grid item xs={4}>
+            <TextField
+              sx={{ flex: 1 }}
+              variant="standard"
+              value={titleVal}
+              placeholder="title"
+              multiline
+              onChange={(e) => setTitle(e.target.value)}
+              // eslint-disable-next-line react/jsx-props-no-spreading, no-undef
+              {...(invalidInput && titleVal.length === 0 && { error: true, helperText: 'Include a title' })}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Box sx={{ display: 'flex', flexDirection: ' column', alignItems: 'center' }}>
+              <div className={styles.musicInfoRow}>
+                <span className={styles.musicLeft}>Root:</span>
+                <TextField
+                  value={rootVal}
+                  onChange={(e) => setRoot(e.target.value)}
+                  select
+                  variant="standard"
+                >
+                  {rootValues.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
+              <div className={styles.musicInfoRow}>
+                <span className={styles.musicLeft}>Mode:</span>
+                <TextField
+                  value={modeVal}
+                  onChange={(e) => setMode(e.target.value)}
+                  select
+                  variant="standard"
+                >
+                  <MenuItem value="major">major</MenuItem>
+                  <MenuItem value="minor">minor</MenuItem>
+                </TextField>
+              </div>
+            </Box>
+          </Grid>
+          <Grid item xs={4} />
+        </Grid>
+      </Box>
+
+      <Box sx={{
+        width: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 5,
+      }}
+      >
+
+        <ChordsDisplay
+          edit
+          progression={chords}
+          selected={selectedChordIdx}
+          handleChordSelect={(chordIdx) => setSelectedChordIdx(chordIdx)}
+          handleChordDelete={handleChordDelete}
+          handleChordAdd={handleChordAdd}
+        />
+      </Box>
+      {/* <Typography variant> Progression must contain at least one chord.</Typography> */}
+      {invalidInput && chords.filter((c) => c.length > 0).length === 0 && <Alert severity="error">Progression cannot contain empty chords.</Alert>}
+      <Box sx={{ width: 1 }}>
+        <Grid container direction="row" alignItems="center">
+          <Grid item xs={4} />
+          <Grid item xs={4}>
+            <RootInput scale={Scale.MAJOR} handleRootSelect={replaceSelectedChord} />
+
+          </Grid>
+          <Grid item xs={4}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <IntervalSelect chord={selectedChord} handleChordModification={replaceSelectedChord} />
+            </Box>
+
+          </Grid>
+        </Grid>
+      </Box>
+      <Box sx={{ my: 5 }}>
+        <ButtonGroup>
+          <Button variant="contained" color="error" onClick={onCancel}>Cancel</Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </ButtonGroup>
+      </Box>
     </Container>
 
   );

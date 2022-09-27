@@ -1,12 +1,15 @@
-.logo {
-    letter-spacing: var(--main-letter-spacing);
-  
-    height: var(--navbar-height);
-    text-align: center;
+.header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
     border-bottom: 1px solid;
+}
+
+.logo {
+  text-align: center;
+  letter-spacing: var(--main-letter-spacing);
+  height: var(--navbar-height);
+  flex-grow: 1;
 }
 
 .main {

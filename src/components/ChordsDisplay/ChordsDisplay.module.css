@@ -1,11 +1,35 @@
 .container {
     display: flex;
+    align-items: center;
+    /* background-color: purple; */
 }
 
 .chord {
     padding: 0 5px;
+    display: flex;
+    align-items: flex-end;
+    height: 50px;
 }
+/* .chordSlot {
+    display: flex;
+    align-items: center;
+} */
 
 .selected {
     border-bottom: 1px solid black;
+}
+
+.root {
+    font-family: jost;
+font-size: 3em;
+margin: 0 5px ;
+}
+
+.modifier {
+    font-family: 'bravura';
+    font-size: 1.5em;
+}
+.clear {
+    /* background-color: red; */
+    align-self: flex-start;
 }

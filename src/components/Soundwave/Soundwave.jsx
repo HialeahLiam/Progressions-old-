@@ -5,6 +5,7 @@ import PropTypes, { number } from 'prop-types';
 import React, {
   useEffect, useMemo, useRef, useState,
 } from 'react';
+import { convertSecondsToMinutesAndSeconds } from '../../lib/progressions';
 
 import styles from './Soundwave.module.css';
 
@@ -23,9 +24,9 @@ function Soundwave({
   const [waveLength, setWaveLength] = useState(null);
   const [waveX, setWaveX] = useState(null);
   const [needleClicked, setNeedleClick] = useState(null);
-  // const [audioRange, setAudioRange] = useState([chordStartTimes[0], endTime]);
-  // const [startTime, setStartTime] = useState(chordStartTimes[0]);
+  const [playbackNeedle, setPlaybackNeedle] = useState(null);
   const startTime = chordStartTimes[0];
+  const [mouseUp, setMouseUp] = useState(false);
 
   const soundwaveEl = useRef(null);
 
@@ -45,18 +46,6 @@ function Soundwave({
 
     resizeObserver.observe(soundwaveEl.current);
   }, []);
-
-  // position = 626
-  // waveX = 591
-  // wavelength = 306
-  // endTime = 205
-  // startTime = 25
-
-  // useEffect(() => { setStartTime(chordStartTimes[0]); }, [chordStartTimes]);
-
-  // useEffect(() => {
-  //   setAudioRange([startTime, endTime]);
-  // }, [startTime, endTime]);
 
   function convertAbsolutePositionToTime(position) {
     const proportion = (position - waveX) / waveLength;
@@ -86,22 +75,52 @@ function Soundwave({
   }
 
   function handleNeedleClick(startTimeIndex) {
+    setPlaybackNeedle(null);
     setNeedleClick(startTimeIndex);
-    document.body.onmouseup = () => { setNeedleClick(null); };
+    setMouseUp(false);
   }
 
   function handleAudioRangeChange(event) {
     updateAudioRange(event.target.value);
   }
 
+  function handleMouseUp() {
+    setMouseUp(true);
+  }
+
+  useEffect(() => {
+    if (mouseUp) {
+      console.log('MOUSE UP');
+      if (needleClicked) {
+        console.log('PLAYBACK');
+        setPlaybackNeedle(needleClicked);
+        // start playback from needle position til next needle/end of audio
+      }
+
+      setNeedleClick(null);
+    }
+  }, [mouseUp]);
+
+  useEffect(() => {
+    console.log('PLAYBACK NEEDLE', playbackNeedle);
+    console.log(needleClicked);
+    if (playbackNeedle) {
+      const start = chordStartTimes[playbackNeedle];
+      const end = playbackNeedle + 1 === chordStartTimes.length ? endTime : chordStartTimes[playbackNeedle + 1];
+      startPlaybackFromAndTo(start, end);
+    }
+  }, [playbackNeedle]);
+
   return (
 
     <div
       className={styles.container}
     >
-      <Box>
+      <Box sx={{ display: 'flex' }}>
         <Slider
+          color="neutral"
           size="small"
+          step={0.1}
           value={[startTime, endTime]}
           onChange={(e) => handleAudioRangeChange(e)}
           disableSwap
@@ -109,8 +128,13 @@ function Soundwave({
           max={audioDuration}
         />
       </Box>
-      <Stack spacing={1} direction="row">
-        <Typography variant="caption">{startTime}</Typography>
+      <Stack spacing={1} direction="row" justifyContent="center">
+        <Typography variant="caption">
+          {convertSecondsToMinutesAndSeconds(startTime).min}
+          :
+          {convertSecondsToMinutesAndSeconds(startTime).sec}
+
+        </Typography>
         <div
           ref={soundwaveEl}
           className={styles.soundwave}
@@ -118,7 +142,7 @@ function Soundwave({
             document.body.onmousemove = (e) => { handleMouseMove(e.pageX); };
             document.body.onmouseup = () => {
               document.body.onmousemove = null;
-              setNeedleClick(null);
+              handleMouseUp();
             };
           }}
           draggable="false"
@@ -141,7 +165,11 @@ function Soundwave({
               )
           ))}
         </div>
-        <Typography variant="caption">{endTime}</Typography>
+        <Typography variant="caption">
+          {convertSecondsToMinutesAndSeconds(endTime).min}
+          :
+          {convertSecondsToMinutesAndSeconds(endTime).sec}
+        </Typography>
       </Stack>
 
     </div>

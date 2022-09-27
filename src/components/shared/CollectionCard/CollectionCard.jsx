@@ -38,8 +38,6 @@ function CollectionCard({
   useEffect(() => {
     if (initialCollectionId) {
       // TODO find the collection and set it's children as displayed
-      console.log('focused collection id:');
-      console.log(initialCollectionId);
       let current = getCollectionFromCollectionTree(rootCollection, initialCollectionId);
       let newPath = [];
       while (current) {
@@ -60,8 +58,6 @@ function CollectionCard({
       setClickPath([]);
       setBackVisible(false);
     }
-    console.log(rootCollection);
-    console.log('effect');
   }, [rootCollection]);
 
   useEffect(() => {

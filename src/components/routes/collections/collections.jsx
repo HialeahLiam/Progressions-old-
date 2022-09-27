@@ -8,18 +8,19 @@ import { getCollectionFromCollectionTree } from '../../../utils/dataMethods';
 import Libraries from '../../Libraries/Libraries';
 import ProgressionsWindow from '../../ProgressionsWindow/ProgressionsWindow';
 import './collections.css';
-import { createCopyOfCollectionsAndAppendNewEntry } from './collections.utils';
+import useCollectionsSearch from './collections.hooks';
+import {
+  createCopyOfCollectionsAndAppendNewEntry, createCopyOfCollectionsAndDeleteCollection, createCopyOfCollectionsAndDeleteProgression, createCopyOfCollectionsAndReplaceEntry,
+} from './collections.utils';
 
 function Collections() {
-  const [library, setLibrary] = useState('public');
   const [selectedCollections, setSelectedCollections] = useState([]);
   const [idPath, setIdPath] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [collections, setCollections] = useState([]);
   const [progressions, setProgressions] = useState([]);
-  // const navigate = useNavigate();
-  // const location = useLocation();
   const { currentUser } = useContext(AuthContext);
+  const {
+    collections, library, setCollections, setLibrary, setSearchText, loading,
+  } = useCollectionsSearch('public');
 
   const Authorization = useMemo(() => `bearer ${currentUser?.token}`, [currentUser]);
 
@@ -32,21 +33,15 @@ function Collections() {
   });
 
   function handleCollectionSelect(path) {
-    console.log('handleCollectionselected');
     if (!loading) setIdPath(path);
   }
 
   async function handleEntryCreation(entry) {
     try {
-      let entry_type = '';
-      if (entry.chords) {
-        entry_type = 'progression';
-      } else {
-        console.log('recognized as collection');
-        entry_type = 'collection';
-      }
-      // make POST request to server
+      const entry_type = entry.chords ? 'progression' : 'collection';
       const { parent_collection_id } = entry;
+
+      // make POST request to server
       const responseBody = await (await fetch(`/api/v1/collections/${parent_collection_id}`, {
         method: 'post',
         headers: {
@@ -65,8 +60,76 @@ function Collections() {
         setCollections(updatedCollections);
       }
     } catch (e) {
-      alert(e);
       console.log(e);
+    }
+  }
+
+  async function handleEntryUpdate(entry) {
+    try {
+      const entry_type = entry.chords ? 'progression' : 'collection';
+      const { _id } = entry;
+
+      // make PUT request to server
+      const endpoint = entry_type === 'progression' ? `/api/v1/progressions/${_id}` : `/api/v1/collections/${_id}`;
+      const responseBody = await (await fetch(endpoint, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization,
+        },
+        body: JSON.stringify({ entry, type: entry_type }),
+      })).json();
+
+      console.log(responseBody);
+
+      if (responseBody.error) {
+        console.log(responseBody.error);
+      } else {
+        // update collections state instead of refretching.
+        // Function deep copies collections to not modify state directly. Replaces entry in copy and returns it.
+        const updatedCollections = createCopyOfCollectionsAndReplaceEntry(collections, responseBody[0]);
+        setCollections(updatedCollections);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function handleProgressionDelete(progId) {
+    try {
+      const responseBody = await fetch(`/api/v1/progressions/${progId}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization,
+        },
+      });
+
+      const updatedCollections = createCopyOfCollectionsAndDeleteProgression(collections, progId);
+      console.log(updatedCollections);
+      setCollections(updatedCollections);
+    } catch (error) {
+      console.log('Could not delete progression', error);
+    }
+  }
+
+  async function handleCollectionDelete(collectionId) {
+    try {
+      const responseBody = await fetch(`/api/v1/collections/${collectionId}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization,
+        },
+      });
+
+      const updatedCollections = createCopyOfCollectionsAndDeleteCollection(collections, collectionId);
+      console.log('collection DELETED');
+      console.log(updatedCollections);
+      setIdPath((prev) => prev.slice(0, -1));
+      setCollections(updatedCollections);
+    } catch (error) {
+      console.log('Could not delete collection', error);
     }
   }
 
@@ -85,6 +148,11 @@ function Collections() {
         console.log('Collection couldn\'t be added :()');
         console.log(e);
       });
+  }
+
+  function handleCollectionSearch(text) {
+    setIdPath([]);
+    setSearchText(text);
   }
 
   useEffect(() => {
@@ -106,42 +174,9 @@ function Collections() {
   }, [collections, idPath]);
 
   useEffect(() => {
-    const fetchPersonalCollections = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/v1/users/${currentUser.id}/collections`, {
-          headers: {
-            Authorization: `bearer ${currentUser.token}`,
-          },
-        });
-        setLoading(false);
-
-        response.json().then(({ collections }) => setCollections(collections));
-      } catch (error) {
-        console.log(`Couldn't retrieve ${currentUser.username}'s collections`);
-      }
-    };
-    const fetchPublicCollections = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/v1/collections');
-        setLoading(false);
-
-        response.json().then(({ collections }) => setCollections(collections));
-      } catch (error) {
-        console.log(`Couldn't retrieve ${currentUser.username}'s collections`);
-      }
-    };
-
-    if (library === 'public') {
-      fetchPublicCollections();
-    } else if (library === 'personal' && currentUser) {
-      // fetch user's collections
-      fetchPersonalCollections();
-    }
-
     setProgressions([]);
     setSelectedCollections([]);
+    setIdPath([]);
   }, [library]);
 
   useEffect(() => {
@@ -157,12 +192,16 @@ function Collections() {
         collections={collections}
         loading={loading}
         library={library}
+        onSearch={handleCollectionSearch}
       />
       <ProgressionsWindow
         progressions={progressions}
         libraryScope={library}
         selectedCollections={selectedCollections}
         onEntryCreation={handleEntryCreation}
+        onProgressionEdit={handleEntryUpdate}
+        onProgressionDelete={handleProgressionDelete}
+        onCollectionDelete={handleCollectionDelete}
       />
     </div>
   );

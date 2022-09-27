@@ -6,6 +6,8 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { Snackbar } from '@mui/material';
 import { auth } from '../firebase';
 
 export const AuthContext = createContext(1);
@@ -13,10 +15,11 @@ export const AuthContext = createContext(1);
 function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
-  console.log(loading);
+  const [error, setError] = useState('');
+  const [authAlert, setAuthAlert] = useState('');
+  const navigate = useNavigate();
 
   const signUp = (username, email, password) => {
-    console.log('Sign up!');
     setLoading(true);
 
     createUserWithEmailAndPassword(auth, email, password)
@@ -39,23 +42,23 @@ function AuthProvider({ children }) {
           .then((body) => console.log(body));
       })
       .catch((error) => {
-        console.log('Unable to sign up!');
-        console.log(error);
+        setLoading(false);
+        setError(error.code);
+        throw error;
       });
   };
 
-  const login = (email, password) => {
-    console.log('Login!');
+  const login = async (email, password) => {
     setLoading(true);
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        // ...
-      })
-      .catch((error) => {
-        console.log('Unable to sign up!');
-        console.log(error);
-      });
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      setAuthAlert('Logged in successfully!');
+    } catch (error) {
+      setLoading(false);
+      setError(error.code);
+      throw error;
+    }
   };
 
   const signOut = () => {
@@ -63,6 +66,7 @@ function AuthProvider({ children }) {
     signOutFirebase(auth)
       .then(() => {
         // Sign-out successful.
+        setAuthAlert('Signed out successfully!');
       }).catch((error) => {
         // An error happened.
       });
@@ -70,6 +74,7 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     console.log('AuthState change!');
+    setError('');
 
     // firebase return an Unsubscribe function to remove observer callback,
     // which we run when component unmounts
@@ -94,84 +99,20 @@ function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  // ignore
-  useEffect(() => {
-    // const loggedUserJSON = window.localStorage.getItem('loggedUser');
-
-    // if (!currentUser && loggedUserJSON) {
-    //   const user = JSON.parse(loggedUserJSON);
-    //   setCurrentUser(user);
-    // }
-  });
-
-  // ignore
-  const updateUser = (body) => {
-    console.log(body);
-
-    const user = {
-      token: body.auth_token,
-      // eslint-disable-next-line no-underscore-dangle
-      id: body.info._id,
-      username: body.info.username,
-      email: body.info.email,
-    };
-
-    setCurrentUser(user);
-
-    window.localStorage.setItem('loggedUser', JSON.stringify(user));
-
-    setLoading(false);
-  };
-
-  // ignore
-  const signUpX = async (username, email, password) => {
-    setLoading(true);
-    const body = JSON.stringify({ username, email, password });
-    try {
-      const response = await fetch('http://localhost:3001/api/v1/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body,
-      });
-
-      const responseBody = await response.json();
-      updateUser(responseBody);
-    } catch (error) {
-      console.log(error);
+  function handleAlertClose(event, reason) {
+    if (reason === 'clickaway') {
+      return;
     }
-  };
 
-  // ignore
-  const loginX = async (email, password) => {
-    const body = JSON.stringify({
-      email, password,
-    });
-
-    try {
-      const response = await fetch('http://localhost:3001/api/v1/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body,
-      });
-
-      const responseBody = await response.json();
-      updateUser(responseBody);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    setAuthAlert('');
+  }
 
   const contextValue = {
     currentUser,
     signUp,
     login,
     signOut,
+    error,
   };
 
   return (
@@ -181,7 +122,18 @@ function AuthProvider({ children }) {
 
         This is a fallback in case components depending on user data don't check
         if currentUser is empty */}
-      {!loading && children}
+      {!loading && (
+        <>
+          {children}
+          <Snackbar
+            open={authAlert}
+            autoHideDuration={6000}
+            onClose={handleAlertClose}
+            message={authAlert}
+            // action={action}
+          />
+        </>
+      )}
     </AuthContext.Provider>
   );
 }

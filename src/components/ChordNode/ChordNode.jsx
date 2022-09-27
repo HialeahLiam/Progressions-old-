@@ -7,12 +7,10 @@ export default function ChordNode({
   chord, onClick, position, radius,
 }) {
   const handleInput = () => {
-    // Send a copy of chord object so ProgressionBar can manipulate it without
-    // affecting the chord object here
     onClick();
   };
 
-  const chordString = useMemo(() => convertSemitonesToChordString(chord), [chord]);
+  // const chordString = useMemo(() => convertSemitonesToChordString(chord), [chord]);
 
   return (
     <div
@@ -30,7 +28,7 @@ export default function ChordNode({
     >
       <span className={styles.symbol}>
         {' '}
-        {chordString}
+        {convertSemitonesToChordString(chord).root}
       </span>
     </div>
   );

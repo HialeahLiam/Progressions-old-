@@ -17,9 +17,9 @@ function Libraries({
   collections,
   loading = false,
   library = 'public',
+  onSearch,
 }) {
   const { currentUser } = useContext(AuthContext);
-  const [searchText, setSearchText] = useState(null);
   // const [collections, setCollections] = useState([]);
   const [creatingCollection, createCollection] = useState(false);
   // const [loading, setLoading] = useState(false);
@@ -29,20 +29,6 @@ function Libraries({
   // const Authorization = useMemo(() => `bearer ${currentUser?.token}`, [currentUser]);
 
   const handleCollectionCreation = (title) => {
-    // fetch(`/api/v1/users/${currentUser.id}/collections`, {
-    //   method: 'post',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization,
-    //   },
-    //   body: JSON.stringify({ title }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((body) => setCollections((prev) => [...prev, body.collection]))
-    //   .catch((e) => {
-    //     console.log('Collection couldn\'t be added :()');
-    //     console.log(e);
-    //   });
     onCollectionCreation(title);
     createCollection(false);
   };
@@ -61,48 +47,13 @@ function Libraries({
     createCollection(false);
   };
 
-  // useEffect(() => {
-  //   const fetchPersonalCollections = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await fetch(`/api/v1/users/${currentUser.id}/collections`, {
-  //         headers: {
-  //           Authorization: `bearer ${currentUser.token}`,
-  //         },
-  //       });
-  //       setLoading(false);
-
-  //       response.json().then(({ collections }) => setCollections(collections));
-  //     } catch (error) {
-  //       console.log(`Couldn't retrieve ${currentUser.username}'s collections`);
-  //     }
-  //   };
-  //   const fetchPublicCollections = async () => {
-  //     try {
-  //       const response = await fetch('/api/v1/collections');
-
-  //       response.json().then(({ collections }) => setCollections(collections));
-  //     } catch (error) {
-  //       console.log(`Couldn't retrieve ${currentUser.username}'s collections`);
-  //     }
-  //   };
-
-  //   if (library === 'public') {
-  //     fetchPublicCollections();
-  //     createCollection(false);
-  //   } else if (library === 'personal' && currentUser) {
-  //     // fetch user's collections
-  //     fetchPersonalCollections();
-  //   }
-  // }, [library]);
-
-  // useEffect(() => {
-  //   if (!currentUser) setLibrary('public');
-  // }, [currentUser]);
+  const handleSearchInput = (text) => {
+    onSearch(text);
+  };
 
   return (
     <div className={styles.container}>
-      <LibrarySearch />
+      <LibrarySearch onChange={handleSearchInput} />
       <nav className={styles.libraryTabs}>
         <button
           className={`${styles.tab} ${library === 'personal' ? styles.activeTab : null}`}
