@@ -72,6 +72,5 @@
     "setupFilesAfterEnv": [
       "./src/setUpTests.js"
     ]
-  },
-  "proxy": "http://localhost:3001"
+  }
 }

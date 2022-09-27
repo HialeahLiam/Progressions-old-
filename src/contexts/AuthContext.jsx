@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
 import { auth } from '../firebase';
+import baseUrl from '../utils/backend';
 
 export const AuthContext = createContext(1);
 
@@ -24,7 +25,7 @@ function AuthProvider({ children }) {
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
-        fetch('/api/v1/users/register', {
+        fetch(`${baseUrl}/api/v1/users/register`, {
           method: 'post',
           headers: {
             'Content-Type': 'application/json',

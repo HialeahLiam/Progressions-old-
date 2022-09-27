@@ -17,6 +17,7 @@ import styles from './ProgressionsWindow.module.css';
 import EditProgressionView from '../EditProgressionView/EditProgressionView';
 import TitleInput from '../shared/TitleInput/TitleInput';
 import { AuthContext } from '../../contexts/AuthContext';
+import baseUrl from '../../utils/backend';
 
 const propTypes = {
   libraryScope: PropTypes.oneOf(['public', 'personal']).isRequired,
@@ -129,7 +130,7 @@ function ProgressionsWindow({
 
   async function handleCollectionPublish() {
     try {
-      await fetch(`/api/v1/collections/public?id=${lastCollection._id}`, {
+      await fetch(`${baseUrl}/api/v1/collections/public?id=${lastCollection._id}`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',

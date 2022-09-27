@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthContext';
+import baseUrl from '../../../utils/backend';
 import { getCollectionFromCollectionTree } from '../../../utils/dataMethods';
 import Libraries from '../../Libraries/Libraries';
 import ProgressionsWindow from '../../ProgressionsWindow/ProgressionsWindow';
@@ -21,6 +22,8 @@ function Collections() {
   const {
     collections, library, setCollections, setLibrary, setSearchText, loading,
   } = useCollectionsSearch('public');
+
+  console.log(collections);
 
   const Authorization = useMemo(() => `bearer ${currentUser?.token}`, [currentUser]);
 
@@ -42,7 +45,7 @@ function Collections() {
       const { parent_collection_id } = entry;
 
       // make POST request to server
-      const responseBody = await (await fetch(`/api/v1/collections/${parent_collection_id}`, {
+      const responseBody = await (await fetch(`${baseUrl}/api/v1/collections/${parent_collection_id}`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +74,7 @@ function Collections() {
 
       // make PUT request to server
       const endpoint = entry_type === 'progression' ? `/api/v1/progressions/${_id}` : `/api/v1/collections/${_id}`;
-      const responseBody = await (await fetch(endpoint, {
+      const responseBody = await (await fetch(`${baseUrl}endpoint`, {
         method: 'put',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +100,7 @@ function Collections() {
 
   async function handleProgressionDelete(progId) {
     try {
-      const responseBody = await fetch(`/api/v1/progressions/${progId}`, {
+      const responseBody = await fetch(`${baseUrl}/api/v1/progressions/${progId}`, {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +118,7 @@ function Collections() {
 
   async function handleCollectionDelete(collectionId) {
     try {
-      const responseBody = await fetch(`/api/v1/collections/${collectionId}`, {
+      const responseBody = await fetch(`${baseUrl}/api/v1/collections/${collectionId}`, {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +137,7 @@ function Collections() {
   }
 
   function handleTopLevelCollectionCreation(title) {
-    fetch(`/api/v1/users/${currentUser.id}/collections`, {
+    fetch(`${baseUrl}/api/v1/users/${currentUser.id}/collections`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
