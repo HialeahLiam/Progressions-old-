@@ -34,6 +34,7 @@ function useCollectionsSearch(libraryScope) {
       } catch (error) {
         setLoading(false);
         console.log(`Couldn't retrieve ${currentUser.username}'s collections`);
+        console.log(error);
       }
     };
     const fetchPublicCollections = async () => {
@@ -49,6 +50,7 @@ function useCollectionsSearch(libraryScope) {
         }
       } catch (error) {
         console.log('Couldn\'t retrieve public collections');
+        console.log(error);
       }
     };
 
