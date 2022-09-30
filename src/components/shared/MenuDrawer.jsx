@@ -75,9 +75,9 @@ export default function TemporaryDrawer() {
             </>
           )}
           <List>
-            <ListItem key="collections" disablePadding>
+            {/* <ListItem key="collections" disablePadding>
               <NavLink target="/collections">Collections</NavLink>
-            </ListItem>
+            </ListItem> */}
           </List>
           <Box
             sx={{ display: 'flex', justifyContent: 'center', mt: 'auto' }}

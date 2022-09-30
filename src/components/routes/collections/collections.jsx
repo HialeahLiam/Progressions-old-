@@ -23,7 +23,6 @@ function Collections() {
     collections, library, setCollections, setLibrary, setSearchText, loading,
   } = useCollectionsSearch('public');
 
-
   const Authorization = useMemo(() => `bearer ${currentUser?.token}`, [currentUser]);
 
   const handleLibrarySelection = useCallback((lib) => {
@@ -73,7 +72,7 @@ function Collections() {
 
       // make PUT request to server
       const endpoint = entry_type === 'progression' ? `/api/v1/progressions/${_id}` : `/api/v1/collections/${_id}`;
-      const responseBody = await (await fetch(`${baseUrl}endpoint`, {
+      const responseBody = await (await fetch(`${baseUrl}${endpoint}`, {
         method: 'put',
         headers: {
           'Content-Type': 'application/json',

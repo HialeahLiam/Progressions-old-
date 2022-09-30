@@ -16,6 +16,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
+          <Route path="/" element={<Collections />} />
           <Route path="training" element={<Training />} />
           <Route path="collections" element={<Collections />} />
           {/* <Route path="synthesizer" element={<Synthesizer />} /> */}

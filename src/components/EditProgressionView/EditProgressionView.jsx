@@ -118,7 +118,8 @@ function EditProgressionView({
   function handleChordAdd() {
     setChords((prev) => [...prev, []]);
     setSelectedChordIdx(chords.length);
-    setStartTimes((prev) => [...prev, prev.at(-1) + 5]);
+    console.log((chordStartTimes.at(-1) + endTime) / 2);
+    setStartTimes((prev) => [...prev, (prev.at(-1) + endTime) / 2]);
   }
 
   function replaceSelectedChord(chord) {
