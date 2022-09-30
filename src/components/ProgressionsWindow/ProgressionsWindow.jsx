@@ -246,6 +246,7 @@ function ProgressionsWindow({
               endTime={p.audio.end_time}
               onCancel={handleEditCancel}
               startPlaybackFromAndTo={(start, end) => handlePlaybackFromAndTo(p._id, start, end)}
+              audioDuration={audioDuration}
             />
           )
 

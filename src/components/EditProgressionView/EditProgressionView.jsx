@@ -78,6 +78,7 @@ const propTypes = {
   startTimes: PropTypes.arrayOf(PropTypes.number),
   endTime: PropTypes.number.isRequired,
   onProgressionSubmit: PropTypes.func,
+  audioDuration: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
